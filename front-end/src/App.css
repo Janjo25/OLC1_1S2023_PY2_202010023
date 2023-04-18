@@ -1,0 +1,50 @@
+textarea {
+    resize: none;
+
+    height: 575px;
+    width: 475px;
+}
+
+.buttons-container {
+    justify-content: space-between;
+
+    display: flex;
+}
+
+.buttons-text-boxes-container {
+    margin: 20px auto;
+    max-width: 1000px;
+}
+
+.reports-dropdown-menu a {
+    display: block;
+
+    padding: 5px;
+}
+
+.reports-dropdown-menu a:hover {
+    background-color: rgb(105, 105, 105);
+}
+
+.reports-dropdown-menu {
+    left: 0;
+    position: absolute;
+    top: 100%;
+
+    display: none;
+
+    background-color: rgb(0, 0, 0);
+    cursor: pointer;
+
+    color: rgb(255, 255, 255);
+    font-family: "Droid Serif", serif;
+    font-size: 16px;
+    text-align: center;
+}
+
+.text-boxes-container {
+    border-radius: 5px;
+    margin: 20px auto;
+
+    text-align: center;
+}
