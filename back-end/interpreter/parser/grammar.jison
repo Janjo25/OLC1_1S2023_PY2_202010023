@@ -15,12 +15,12 @@ const {Variable} = require("../expressions/declaration-assignment/variable");
 %%
 
 /* caracteres de escape */
-"\\"                            return 'BACKSLASH';
+"\\'"                           return 'SINGLE_QUOTE';
 "\\\""                          return 'DOUBLE_QUOTE';
-"\\\'"                          return 'SINGLE_QUOTE';
 "\\n"                           return 'NEWLINE';
 "\\r"                           return 'RETURN';
 "\\t"                           return 'TAB';
+"\\"                            return 'BACKSLASH';
 
 /* comentarios */
 \/\*[^>]*\*\/                   /* ignorar comentario de bloque */
