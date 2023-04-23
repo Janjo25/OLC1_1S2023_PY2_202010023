@@ -34,9 +34,6 @@ const {Variable} = require("../expressions/declaration-assignment/variable");
 [0-9]+\.[0-9]+                  return 'DOUBLE_VALUE';
 \'.?\'                          return 'CHAR_VALUE';
 
-/* identificadores */
-[a-zA-Z][a-zA-Z_$0-9]*          return 'IDENTIFIER';
-
 /* operadores aritméticos */
 "%"                             return 'MODULUS';
 "*"                             return 'MULTIPLICATION';
@@ -94,6 +91,9 @@ const {Variable} = require("../expressions/declaration-assignment/variable");
 "void"                          return 'VOID';
 "while"                         return 'WHILE';
 
+/* identificadores */
+[a-zA-Z][a-zA-Z_$0-9]*          return 'IDENTIFIER';
+
 /* símbolos y signos */
 "("                             return 'LEFT_PARENTHESIS';
 ")"                             return 'RIGHT_PARENTHESIS';
@@ -138,6 +138,7 @@ const {Variable} = require("../expressions/declaration-assignment/variable");
 
 program
     : statements EOF                                                        { return $1; }
+    | EOF
     ;
 
 statements
