@@ -137,8 +137,8 @@ const {Variable} = require("../expressions/declaration-assignment/variable");
 %%
 
 program
-    : statements EOF                                                        { return $1; }
-    | EOF
+    : EOF
+    | statements EOF                                                        { return $1; }
     ;
 
 statements
