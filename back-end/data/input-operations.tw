@@ -1,0 +1,86 @@
+// PruebasAritméticas-Suma
+print(50 + 25);
+print(50 + 25.50);
+print(50 + true);
+print(50 + '!');
+print(50 + ": suma");
+
+print(50.25 + 25);
+print(50.25 + 25.50);
+print(50.25 + true);
+print(50.25 + '!');
+print(50.25 + ": suma");
+
+print(false + 25);
+print(false + 25.50);
+print(false + ": suma");
+
+print('Z' + 25);
+print('Z' + 25.50);
+print('Z' + '!');
+print('Z' + ": suma");
+
+print("foo" + 25);
+print("foo" + 25.50);
+print("foo" + true);
+print("foo" + '!');
+print("foo" + ": suma");
+
+// PruebasAritméticas-Resta
+print(50 - 25);
+print(50 - 25.50);
+print(50 - true);
+print(50 - '!');
+
+print(50.25 - 25);
+print(50.25 - 25.50);
+print(50.25 - true);
+print(50.25 - '!');
+
+print(false - 25);
+print(false - 25.50);
+
+print('Z' - 25);
+print('Z' - 25.50);
+
+// PruebasAritméticas-Multiplicación
+print(50 * 25);
+print(50 * 25.50);
+print(50 * '!');
+
+print(50.25 * 25);
+print(50.25 * 25.50);
+print(50.25 * '!');
+
+print('Z' * 25);
+print('Z' * 25.50);
+
+// PruebasAritméticas-División
+print(50 / 25);
+print(50 / 25.50);
+print(50 / '!');
+
+print(50.25 / 25);
+print(50.25 / 25.50);
+print(50.25 / '!');
+
+print('Z' / 25);
+print('Z' / 25.50);
+
+// PruebasAritméticas-Potencia
+print(50 ^ 25);
+print(50 ^ 25.50);
+
+print(50.25 ^ 25);
+print(50.25 ^ 25.50);
+
+// PruebasAritméticas-Módulo
+print(50 % 25);
+print(50 % 25.50);
+
+print(50.25 % 25);
+print(50.25 % 25.50);
+
+// PruebasAritméticas-Negación
+print(-50);
+print(-50.25);
