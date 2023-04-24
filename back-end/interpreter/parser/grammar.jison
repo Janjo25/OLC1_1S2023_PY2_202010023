@@ -168,7 +168,13 @@ expression
     | TRUE                                                                  { $$ = new Variable(DeclarationType.BOOLEAN, $1); }
     | expression ADDITION expression                                        { $$ = new Operation(OperationType.ADDITION, $1, $3); }
     | expression DIVISION expression                                        { $$ = new Operation(OperationType.DIVISION, $1, $3); }
+    | expression EQUALITY expression                                        { $$ = new Operation(OperationType.EQUALITY, $1, $3); }
     | expression EXPONENTIATION expression                                  { $$ = new Operation(OperationType.EXPONENTIATION, $1, $3); }
+    | expression GREATER_THAN expression                                    { $$ = new Operation(OperationType.GREATER_THAN, $1, $3); }
+    | expression GREATER_THAN_OR_EQUAL_TO expression                        { $$ = new Operation(OperationType.GREATER_THAN_OR_EQUAL_TO, $1, $3); }
+    | expression INEQUALITY expression                                      { $$ = new Operation(OperationType.INEQUALITY, $1, $3); }
+    | expression LESS_THAN expression                                       { $$ = new Operation(OperationType.LESS_THAN, $1, $3); }
+    | expression LESS_THAN_OR_EQUAL_TO expression                           { $$ = new Operation(OperationType.LESS_THAN_OR_EQUAL_TO, $1, $3); }
     | expression MODULUS expression                                         { $$ = new Operation(OperationType.MODULUS, $1, $3); }
     | expression MULTIPLICATION expression                                  { $$ = new Operation(OperationType.MULTIPLICATION, $1, $3); }
     | expression SUBTRACTION expression                                     { $$ = new Operation(OperationType.SUBTRACTION, $1, $3); }
