@@ -1,11 +1,10 @@
 enum OperationType {
     ADDITION,
-    DECREMENT,
     DIVISION,
     EXPONENTIATION,
-    INCREMENT,
     MODULUS,
     MULTIPLICATION,
+    NEGATION,
     SUBTRACTION,
 }
 
