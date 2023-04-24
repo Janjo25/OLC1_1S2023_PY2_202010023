@@ -44,18 +44,18 @@ const {Variable} = require("../expressions/declaration-assignment/variable");
 "/"                             return 'DIVISION';
 "^"                             return 'EXPONENTIATION';
 
+/* operadores relacionales */
+"!="                            return 'INEQUALITY';
+"<="                            return 'LESS_THAN_OR_EQUAL_TO';
+"<"                             return 'LESS_THAN';
+"=="                            return 'EQUALITY';
+">="                            return 'GREATER_THAN_OR_EQUAL_TO';
+">"                             return 'GREATER_THAN';
+
 /* operadores lógicos */
 "!"                             return 'NOT';
 "&&"                            return 'AND';
 "||"                            return 'OR';
-
-/* operadores relacionales */
-"!="                            return 'INEQUALITY';
-"<"                             return 'LESS_THAN';
-"<="                            return 'LESS_THAN_OR_EQUAL_TO';
-"=="                            return 'EQUALITY';
-">"                             return 'GREATER_THAN';
-">="                            return 'GREATER_THAN_OR_EQUAL_TO';
 
 /* palabras reservadas */
 "boolean"                       return 'BOOLEAN_KEYWORD';
