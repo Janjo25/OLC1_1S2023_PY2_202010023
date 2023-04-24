@@ -84,3 +84,81 @@ print(50.25 % 25.50);
 // PruebasAritméticas-Negación
 print(-50);
 print(-50.25);
+
+// PruebasRelacionales-Igualdad
+print(50 == 25);
+print(50 == 25.50);
+print(50 == 'A');
+print(50.25 == 25);
+print(50.25 == 25.50);
+print(50.25 == 'A');
+print(false == true);
+print('Z' == 25);
+print('Z' == 25.50);
+print('Z' == 'A');
+print("foo" == "bar");
+
+// PruebasRelacionales-Desigualdad
+print(50 != 25);
+print(50 != 25.50);
+print(50 != 'A');
+print(50.25 != 25);
+print(50.25 != 25.50);
+print(50.25 != 'A');
+print(false != true);
+print('Z' != 25);
+print('Z' != 25.50);
+print('Z' != 'A');
+print("foo" != "bar");
+
+// PruebasRelacionales-MenorQue
+print(50 < 25);
+print(50 < 25.50);
+print(50 < 'A');
+print(50.25 < 25);
+print(50.25 < 25.50);
+print(50.25 < 'A');
+print(false < true);
+print('Z' < 25);
+print('Z' < 25.50);
+print('Z' < 'A');
+print("foo" < "bar");
+
+// PruebasRelacionales-MenorOIgualQue
+print(50 <= 25);
+print(50 <= 25.50);
+print(50 <= 'A');
+print(50.25 <= 25);
+print(50.25 <= 25.50);
+print(50.25 <= 'A');
+print(false <= true);
+print('Z' <= 25);
+print('Z' <= 25.50);
+print('Z' <= 'A');
+print("foo" <= "bar");
+
+// PruebasRelacionales-MayorQue
+print(50 > 25);
+print(50 > 25.50);
+print(50 > 'A');
+print(50.25 > 25);
+print(50.25 > 25.50);
+print(50.25 > 'A');
+print(false > true);
+print('Z' > 25);
+print('Z' > 25.50);
+print('Z' > 'A');
+print("foo" > "bar");
+
+// PruebasRelacionales-MayorOIgualQue
+print(50 >= 25);
+print(50 >= 25.50);
+print(50 >= 'A');
+print(50.25 >= 25);
+print(50.25 >= 25.50);
+print(50.25 >= 'A');
+print(false >= true);
+print('Z' >= 25);
+print('Z' >= 25.50);
+print('Z' >= 'A');
+print("foo" >= "bar");
