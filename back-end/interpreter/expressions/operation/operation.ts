@@ -80,7 +80,7 @@ class Operation extends Expression {
         return this._type;
     };
 
-    getValue(): number | string | undefined {
+    getValue(): boolean | number | string | undefined {
         let leftOperand;
         let rightOperand;
 
@@ -417,6 +417,125 @@ class Operation extends Expression {
 
                         return;
                 }
+            case OperationType.EQUALITY:
+                this._type = DType.BOOLEAN;
+
+                switch (this._leftOperand.getType()) {
+                    case DType.BOOLEAN:
+                        switch (this._rightOperand.getType()) {
+                            case DType.BOOLEAN:
+                                leftOperand = this._leftOperand.getValue().toString() == 'true';
+                                rightOperand = this._rightOperand.getValue().toString() == 'true';
+
+                                result = leftOperand == rightOperand;
+
+                                return result;
+                            default:
+                                alert("Los operandos no son válidos para realizar una comparación.");
+
+                                return;
+                        }
+                    case DType.CHAR:
+                        switch (this._rightOperand.getType()) {
+                            case DType.CHAR:
+                                leftOperand = this._leftOperand.getValue().toString().replace(/'/g, '').charCodeAt(0);
+                                rightOperand = this._rightOperand.getValue().toString().replace(/'/g, '').charCodeAt(0);
+
+                                result = leftOperand == rightOperand;
+
+                                return result;
+                            case DType.DOUBLE:
+                                leftOperand = this._leftOperand.getValue().toString().replace(/'/g, '').charCodeAt(0);
+                                rightOperand = this._rightOperand.getValue();
+
+                                result = parseFloat(String(leftOperand)) == parseFloat(<string>rightOperand);
+
+                                return result;
+                            case DType.INT:
+                                leftOperand = this._leftOperand.getValue().toString().replace(/'/g, '').charCodeAt(0);
+                                rightOperand = this._rightOperand.getValue();
+
+                                result = parseInt(String(leftOperand)) == parseInt(<string>rightOperand);
+
+                                return result;
+                            default:
+                                alert("Los operandos no son válidos para realizar una comparación.");
+
+                                return;
+                        }
+                    case DType.DOUBLE:
+                        switch (this._rightOperand.getType()) {
+                            case DType.CHAR:
+                                leftOperand = this._leftOperand.getValue();
+                                rightOperand = this._rightOperand.getValue().toString().replace(/'/g, '').charCodeAt(0);
+
+                                result = parseFloat(<string>leftOperand) == parseFloat(String(rightOperand));
+
+                                return result;
+                            case DType.DOUBLE:
+                                leftOperand = parseFloat(<string>this._leftOperand.getValue());
+                                rightOperand = parseFloat(<string>this._rightOperand.getValue());
+
+                                result = leftOperand == rightOperand;
+
+                                return result;
+                            case DType.INT:
+                                leftOperand = parseFloat(<string>this._leftOperand.getValue());
+                                rightOperand = parseInt(<string>this._rightOperand.getValue());
+
+                                result = leftOperand == rightOperand;
+
+                                return result;
+                            default:
+                                alert("Los operandos no son válidos para realizar una comparación.");
+
+                                return;
+                        }
+                    case DType.INT:
+                        switch (this._rightOperand.getType()) {
+                            case DType.CHAR:
+                                leftOperand = parseInt(<string>this._leftOperand.getValue());
+                                rightOperand = this._rightOperand.getValue().toString().replace(/'/g, '').charCodeAt(0);
+
+                                result = leftOperand == rightOperand;
+
+                                return result;
+                            case DType.DOUBLE:
+                                leftOperand = parseInt(<string>this._leftOperand.getValue());
+                                rightOperand = parseFloat(<string>this._rightOperand.getValue());
+
+                                result = leftOperand == rightOperand;
+
+                                return result;
+                            case DType.INT:
+                                leftOperand = parseInt(<string>this._leftOperand.getValue());
+                                rightOperand = parseInt(<string>this._rightOperand.getValue());
+
+                                result = leftOperand == rightOperand;
+
+                                return result;
+                            default:
+                                alert("Los operandos no son válidos para realizar una comparación.");
+
+                                return;
+                        }
+                    case DType.STRING:
+                        switch (this._rightOperand.getType()) {
+                            case DType.STRING:
+                                leftOperand = this._leftOperand.getValue().toString();
+                                rightOperand = this._rightOperand.getValue().toString();
+
+                                result = leftOperand == rightOperand;
+
+                                return result;
+                            default:
+                                alert("Los operandos no son válidos para realizar una comparación.");
+
+                                return;
+                        }
+                    default:
+                        return; // Este caso nunca se ejecutará.
+                }
             case OperationType.EXPONENTIATION:
                 this._type = this.getExponentiationType(this._leftOperand.getType(), this._rightOperand.getType());
 
@@ -467,6 +586,601 @@ class Operation extends Expression {
                         alert("Los operandos no son válidos para realizar una operación de exponenciación.");
 
                         return;
+                }
+            case OperationType.GREATER_THAN:
+                this._type = DType.BOOLEAN;
+
+                switch (this._leftOperand.getType()) {
+                    case DType.BOOLEAN:
+                        switch (this._rightOperand.getType()) {
+                            case DType.BOOLEAN:
+                                leftOperand = this._leftOperand.getValue().toString() == 'true';
+                                rightOperand = this._rightOperand.getValue().toString() == 'true';
+
+                                result = leftOperand > rightOperand;
+
+                                return result;
+                            default:
+                                alert("Los operandos no son válidos para realizar una comparación.");
+
+                                return;
+                        }
+                    case DType.CHAR:
+                        switch (this._rightOperand.getType()) {
+                            case DType.CHAR:
+                                leftOperand = this._leftOperand.getValue().toString().replace(/'/g, '').charCodeAt(0);
+                                rightOperand = this._rightOperand.getValue().toString().replace(/'/g, '').charCodeAt(0);
+
+                                result = leftOperand > rightOperand;
+
+                                return result;
+                            case DType.DOUBLE:
+                                leftOperand = this._leftOperand.getValue().toString().replace(/'/g, '').charCodeAt(0);
+                                rightOperand = this._rightOperand.getValue();
+
+                                result = parseFloat(String(leftOperand)) > parseFloat(<string>rightOperand);
+
+                                return result;
+                            case DType.INT:
+                                leftOperand = this._leftOperand.getValue().toString().replace(/'/g, '').charCodeAt(0);
+                                rightOperand = this._rightOperand.getValue();
+
+                                result = parseInt(String(leftOperand)) > parseInt(<string>rightOperand);
+
+                                return result;
+                            default:
+                                alert("Los operandos no son válidos para realizar una comparación.");
+
+                                return;
+                        }
+                    case DType.DOUBLE:
+                        switch (this._rightOperand.getType()) {
+                            case DType.CHAR:
+                                leftOperand = this._leftOperand.getValue();
+                                rightOperand = this._rightOperand.getValue().toString().replace(/'/g, '').charCodeAt(0);
+
+                                result = parseFloat(<string>leftOperand) > parseFloat(String(rightOperand));
+
+                                return result;
+                            case DType.DOUBLE:
+                                leftOperand = parseFloat(<string>this._leftOperand.getValue());
+                                rightOperand = parseFloat(<string>this._rightOperand.getValue());
+
+                                result = leftOperand > rightOperand;
+
+                                return result;
+                            case DType.INT:
+                                leftOperand = parseFloat(<string>this._leftOperand.getValue());
+                                rightOperand = parseInt(<string>this._rightOperand.getValue());
+
+                                result = leftOperand > rightOperand;
+
+                                return result;
+                            default:
+                                alert("Los operandos no son válidos para realizar una comparación.");
+
+                                return;
+                        }
+                    case DType.INT:
+                        switch (this._rightOperand.getType()) {
+                            case DType.CHAR:
+                                leftOperand = parseInt(<string>this._leftOperand.getValue());
+                                rightOperand = this._rightOperand.getValue().toString().replace(/'/g, '').charCodeAt(0);
+
+                                result = leftOperand > rightOperand;
+
+                                return result;
+                            case DType.DOUBLE:
+                                leftOperand = parseInt(<string>this._leftOperand.getValue());
+                                rightOperand = parseFloat(<string>this._rightOperand.getValue());
+
+                                result = leftOperand > rightOperand;
+
+                                return result;
+                            case DType.INT:
+                                leftOperand = parseInt(<string>this._leftOperand.getValue());
+                                rightOperand = parseInt(<string>this._rightOperand.getValue());
+
+                                result = leftOperand > rightOperand;
+
+                                return result;
+                            default:
+                                alert("Los operandos no son válidos para realizar una comparación.");
+
+                                return;
+                        }
+                    case DType.STRING:
+                        switch (this._rightOperand.getType()) {
+                            case DType.STRING:
+                                leftOperand = this._leftOperand.getValue().toString();
+                                rightOperand = this._rightOperand.getValue().toString();
+
+                                result = leftOperand > rightOperand;
+
+                                return result;
+                            default:
+                                alert("Los operandos no son válidos para realizar una comparación.");
+
+                                return;
+                        }
+                    default:
+                        return; // Este caso nunca se ejecutará.
+                }
+            case OperationType.GREATER_THAN_OR_EQUAL_TO:
+                this._type = DType.BOOLEAN;
+
+                switch (this._leftOperand.getType()) {
+                    case DType.BOOLEAN:
+                        switch (this._rightOperand.getType()) {
+                            case DType.BOOLEAN:
+                                leftOperand = this._leftOperand.getValue().toString() == 'true';
+                                rightOperand = this._rightOperand.getValue().toString() == 'true';
+
+                                result = leftOperand >= rightOperand;
+
+                                return result;
+                            default:
+                                alert("Los operandos no son válidos para realizar una comparación.");
+
+                                return;
+                        }
+                    case DType.CHAR:
+                        switch (this._rightOperand.getType()) {
+                            case DType.CHAR:
+                                leftOperand = this._leftOperand.getValue().toString().replace(/'/g, '').charCodeAt(0);
+                                rightOperand = this._rightOperand.getValue().toString().replace(/'/g, '').charCodeAt(0);
+
+                                result = leftOperand >= rightOperand;
+
+                                return result;
+                            case DType.DOUBLE:
+                                leftOperand = this._leftOperand.getValue().toString().replace(/'/g, '').charCodeAt(0);
+                                rightOperand = this._rightOperand.getValue();
+
+                                result = parseFloat(String(leftOperand)) >= parseFloat(<string>rightOperand);
+
+                                return result;
+                            case DType.INT:
+                                leftOperand = this._leftOperand.getValue().toString().replace(/'/g, '').charCodeAt(0);
+                                rightOperand = this._rightOperand.getValue();
+
+                                result = parseInt(String(leftOperand)) >= parseInt(<string>rightOperand);
+
+                                return result;
+                            default:
+                                alert("Los operandos no son válidos para realizar una comparación.");
+
+                                return;
+                        }
+                    case DType.DOUBLE:
+                        switch (this._rightOperand.getType()) {
+                            case DType.CHAR:
+                                leftOperand = this._leftOperand.getValue();
+                                rightOperand = this._rightOperand.getValue().toString().replace(/'/g, '').charCodeAt(0);
+
+                                result = parseFloat(<string>leftOperand) >= parseFloat(String(rightOperand));
+
+                                return result;
+                            case DType.DOUBLE:
+                                leftOperand = parseFloat(<string>this._leftOperand.getValue());
+                                rightOperand = parseFloat(<string>this._rightOperand.getValue());
+
+                                result = leftOperand >= rightOperand;
+
+                                return result;
+                            case DType.INT:
+                                leftOperand = parseFloat(<string>this._leftOperand.getValue());
+                                rightOperand = parseInt(<string>this._rightOperand.getValue());
+
+                                result = leftOperand >= rightOperand;
+
+                                return result;
+                            default:
+                                alert("Los operandos no son válidos para realizar una comparación.");
+
+                                return;
+                        }
+                    case DType.INT:
+                        switch (this._rightOperand.getType()) {
+                            case DType.CHAR:
+                                leftOperand = parseInt(<string>this._leftOperand.getValue());
+                                rightOperand = this._rightOperand.getValue().toString().replace(/'/g, '').charCodeAt(0);
+
+                                result = leftOperand >= rightOperand;
+
+                                return result;
+                            case DType.DOUBLE:
+                                leftOperand = parseInt(<string>this._leftOperand.getValue());
+                                rightOperand = parseFloat(<string>this._rightOperand.getValue());
+
+                                result = leftOperand >= rightOperand;
+
+                                return result;
+                            case DType.INT:
+                                leftOperand = parseInt(<string>this._leftOperand.getValue());
+                                rightOperand = parseInt(<string>this._rightOperand.getValue());
+
+                                result = leftOperand >= rightOperand;
+
+                                return result;
+                            default:
+                                alert("Los operandos no son válidos para realizar una comparación.");
+
+                                return;
+                        }
+                    case DType.STRING:
+                        switch (this._rightOperand.getType()) {
+                            case DType.STRING:
+                                leftOperand = this._leftOperand.getValue().toString();
+                                rightOperand = this._rightOperand.getValue().toString();
+
+                                result = leftOperand >= rightOperand;
+
+                                return result;
+                            default:
+                                alert("Los operandos no son válidos para realizar una comparación.");
+
+                                return;
+                        }
+                    default:
+                        return; // Este caso nunca se ejecutará.
+                }
+            case OperationType.INEQUALITY:
+                this._type = DType.BOOLEAN;
+
+                switch (this._leftOperand.getType()) {
+                    case DType.BOOLEAN:
+                        switch (this._rightOperand.getType()) {
+                            case DType.BOOLEAN:
+                                leftOperand = this._leftOperand.getValue().toString() == 'true';
+                                rightOperand = this._rightOperand.getValue().toString() == 'true';
+
+                                result = leftOperand != rightOperand;
+
+                                return result;
+                            default:
+                                alert("Los operandos no son válidos para realizar una comparación.");
+
+                                return;
+                        }
+                    case DType.CHAR:
+                        switch (this._rightOperand.getType()) {
+                            case DType.CHAR:
+                                leftOperand = this._leftOperand.getValue().toString().replace(/'/g, '').charCodeAt(0);
+                                rightOperand = this._rightOperand.getValue().toString().replace(/'/g, '').charCodeAt(0);
+
+                                result = leftOperand != rightOperand;
+
+                                return result;
+                            case DType.DOUBLE:
+                                leftOperand = this._leftOperand.getValue().toString().replace(/'/g, '').charCodeAt(0);
+                                rightOperand = this._rightOperand.getValue();
+
+                                result = parseFloat(String(leftOperand)) != parseFloat(<string>rightOperand);
+
+                                return result;
+                            case DType.INT:
+                                leftOperand = this._leftOperand.getValue().toString().replace(/'/g, '').charCodeAt(0);
+                                rightOperand = this._rightOperand.getValue();
+
+                                result = parseInt(String(leftOperand)) != parseInt(<string>rightOperand);
+
+                                return result;
+                            default:
+                                alert("Los operandos no son válidos para realizar una comparación.");
+
+                                return;
+                        }
+                    case DType.DOUBLE:
+                        switch (this._rightOperand.getType()) {
+                            case DType.CHAR:
+                                leftOperand = this._leftOperand.getValue();
+                                rightOperand = this._rightOperand.getValue().toString().replace(/'/g, '').charCodeAt(0);
+
+                                result = parseFloat(<string>leftOperand) != parseFloat(String(rightOperand));
+
+                                return result;
+                            case DType.DOUBLE:
+                                leftOperand = parseFloat(<string>this._leftOperand.getValue());
+                                rightOperand = parseFloat(<string>this._rightOperand.getValue());
+
+                                result = leftOperand != rightOperand;
+
+                                return result;
+                            case DType.INT:
+                                leftOperand = parseFloat(<string>this._leftOperand.getValue());
+                                rightOperand = parseInt(<string>this._rightOperand.getValue());
+
+                                result = leftOperand != rightOperand;
+
+                                return result;
+                            default:
+                                alert("Los operandos no son válidos para realizar una comparación.");
+
+                                return;
+                        }
+                    case DType.INT:
+                        switch (this._rightOperand.getType()) {
+                            case DType.CHAR:
+                                leftOperand = parseInt(<string>this._leftOperand.getValue());
+                                rightOperand = this._rightOperand.getValue().toString().replace(/'/g, '').charCodeAt(0);
+
+                                result = leftOperand != rightOperand;
+
+                                return result;
+                            case DType.DOUBLE:
+                                leftOperand = parseInt(<string>this._leftOperand.getValue());
+                                rightOperand = parseFloat(<string>this._rightOperand.getValue());
+
+                                result = leftOperand != rightOperand;
+
+                                return result;
+                            case DType.INT:
+                                leftOperand = parseInt(<string>this._leftOperand.getValue());
+                                rightOperand = parseInt(<string>this._rightOperand.getValue());
+
+                                result = leftOperand != rightOperand;
+
+                                return result;
+                            default:
+                                alert("Los operandos no son válidos para realizar una comparación.");
+
+                                return;
+                        }
+                    case DType.STRING:
+                        switch (this._rightOperand.getType()) {
+                            case DType.STRING:
+                                leftOperand = this._leftOperand.getValue().toString();
+                                rightOperand = this._rightOperand.getValue().toString();
+
+                                result = leftOperand != rightOperand;
+
+                                return result;
+                            default:
+                                alert("Los operandos no son válidos para realizar una comparación.");
+
+                                return;
+                        }
+                    default:
+                        return; // Este caso nunca se ejecutará.
+                }
+            case OperationType.LESS_THAN:
+                this._type = DType.BOOLEAN;
+
+                switch (this._leftOperand.getType()) {
+                    case DType.BOOLEAN:
+                        switch (this._rightOperand.getType()) {
+                            case DType.BOOLEAN:
+                                leftOperand = this._leftOperand.getValue().toString() == 'true';
+                                rightOperand = this._rightOperand.getValue().toString() == 'true';
+
+                                result = leftOperand < rightOperand;
+
+                                return result;
+                            default:
+                                alert("Los operandos no son válidos para realizar una comparación.");
+
+                                return;
+                        }
+                    case DType.CHAR:
+                        switch (this._rightOperand.getType()) {
+                            case DType.CHAR:
+                                leftOperand = this._leftOperand.getValue().toString().replace(/'/g, '').charCodeAt(0);
+                                rightOperand = this._rightOperand.getValue().toString().replace(/'/g, '').charCodeAt(0);
+
+                                result = leftOperand < rightOperand;
+
+                                return result;
+                            case DType.DOUBLE:
+                                leftOperand = this._leftOperand.getValue().toString().replace(/'/g, '').charCodeAt(0);
+                                rightOperand = this._rightOperand.getValue();
+
+                                result = parseFloat(String(leftOperand)) < parseFloat(<string>rightOperand);
+
+                                return result;
+                            case DType.INT:
+                                leftOperand = this._leftOperand.getValue().toString().replace(/'/g, '').charCodeAt(0);
+                                rightOperand = this._rightOperand.getValue();
+
+                                result = parseInt(String(leftOperand)) < parseInt(<string>rightOperand);
+
+                                return result;
+                            default:
+                                alert("Los operandos no son válidos para realizar una comparación.");
+
+                                return;
+                        }
+                    case DType.DOUBLE:
+                        switch (this._rightOperand.getType()) {
+                            case DType.CHAR:
+                                leftOperand = this._leftOperand.getValue();
+                                rightOperand = this._rightOperand.getValue().toString().replace(/'/g, '').charCodeAt(0);
+
+                                result = parseFloat(<string>leftOperand) < parseFloat(String(rightOperand));
+
+                                return result;
+                            case DType.DOUBLE:
+                                leftOperand = parseFloat(<string>this._leftOperand.getValue());
+                                rightOperand = parseFloat(<string>this._rightOperand.getValue());
+
+                                result = leftOperand < rightOperand;
+
+                                return result;
+                            case DType.INT:
+                                leftOperand = parseFloat(<string>this._leftOperand.getValue());
+                                rightOperand = parseInt(<string>this._rightOperand.getValue());
+
+                                result = leftOperand < rightOperand;
+
+                                return result;
+                            default:
+                                alert("Los operandos no son válidos para realizar una comparación.");
+
+                                return;
+                        }
+                    case DType.INT:
+                        switch (this._rightOperand.getType()) {
+                            case DType.CHAR:
+                                leftOperand = parseInt(<string>this._leftOperand.getValue());
+                                rightOperand = this._rightOperand.getValue().toString().replace(/'/g, '').charCodeAt(0);
+
+                                result = leftOperand < rightOperand;
+
+                                return result;
+                            case DType.DOUBLE:
+                                leftOperand = parseInt(<string>this._leftOperand.getValue());
+                                rightOperand = parseFloat(<string>this._rightOperand.getValue());
+
+                                result = leftOperand < rightOperand;
+
+                                return result;
+                            case DType.INT:
+                                leftOperand = parseInt(<string>this._leftOperand.getValue());
+                                rightOperand = parseInt(<string>this._rightOperand.getValue());
+
+                                result = leftOperand < rightOperand;
+
+                                return result;
+                            default:
+                                alert("Los operandos no son válidos para realizar una comparación.");
+
+                                return;
+                        }
+                    case DType.STRING:
+                        switch (this._rightOperand.getType()) {
+                            case DType.STRING:
+                                leftOperand = this._leftOperand.getValue().toString();
+                                rightOperand = this._rightOperand.getValue().toString();
+
+                                result = leftOperand < rightOperand;
+
+                                return result;
+                            default:
+                                alert("Los operandos no son válidos para realizar una comparación.");
+
+                                return;
+                        }
+                    default:
+                        return; // Este caso nunca se ejecutará.
+                }
+            case OperationType.LESS_THAN_OR_EQUAL_TO:
+                this._type = DType.BOOLEAN;
+
+                switch (this._leftOperand.getType()) {
+                    case DType.BOOLEAN:
+                        switch (this._rightOperand.getType()) {
+                            case DType.BOOLEAN:
+                                leftOperand = this._leftOperand.getValue().toString() == 'true';
+                                rightOperand = this._rightOperand.getValue().toString() == 'true';
+
+                                result = leftOperand <= rightOperand;
+
+                                return result;
+                            default:
+                                alert("Los operandos no son válidos para realizar una comparación.");
+
+                                return;
+                        }
+                    case DType.CHAR:
+                        switch (this._rightOperand.getType()) {
+                            case DType.CHAR:
+                                leftOperand = this._leftOperand.getValue().toString().replace(/'/g, '').charCodeAt(0);
+                                rightOperand = this._rightOperand.getValue().toString().replace(/'/g, '').charCodeAt(0);
+
+                                result = leftOperand <= rightOperand;
+
+                                return result;
+                            case DType.DOUBLE:
+                                leftOperand = this._leftOperand.getValue().toString().replace(/'/g, '').charCodeAt(0);
+                                rightOperand = this._rightOperand.getValue();
+
+                                result = parseFloat(String(leftOperand)) <= parseFloat(<string>rightOperand);
+
+                                return result;
+                            case DType.INT:
+                                leftOperand = this._leftOperand.getValue().toString().replace(/'/g, '').charCodeAt(0);
+                                rightOperand = this._rightOperand.getValue();
+
+                                result = parseInt(String(leftOperand)) <= parseInt(<string>rightOperand);
+
+                                return result;
+                            default:
+                                alert("Los operandos no son válidos para realizar una comparación.");
+
+                                return;
+                        }
+                    case DType.DOUBLE:
+                        switch (this._rightOperand.getType()) {
+                            case DType.CHAR:
+                                leftOperand = this._leftOperand.getValue();
+                                rightOperand = this._rightOperand.getValue().toString().replace(/'/g, '').charCodeAt(0);
+
+                                result = parseFloat(<string>leftOperand) <= parseFloat(String(rightOperand));
+
+                                return result;
+                            case DType.DOUBLE:
+                                leftOperand = parseFloat(<string>this._leftOperand.getValue());
+                                rightOperand = parseFloat(<string>this._rightOperand.getValue());
+
+                                result = leftOperand <= rightOperand;
+
+                                return result;
+                            case DType.INT:
+                                leftOperand = parseFloat(<string>this._leftOperand.getValue());
+                                rightOperand = parseInt(<string>this._rightOperand.getValue());
+
+                                result = leftOperand <= rightOperand;
+
+                                return result;
+                            default:
+                                alert("Los operandos no son válidos para realizar una comparación.");
+
+                                return;
+                        }
+                    case DType.INT:
+                        switch (this._rightOperand.getType()) {
+                            case DType.CHAR:
+                                leftOperand = parseInt(<string>this._leftOperand.getValue());
+                                rightOperand = this._rightOperand.getValue().toString().replace(/'/g, '').charCodeAt(0);
+
+                                result = leftOperand <= rightOperand;
+
+                                return result;
+                            case DType.DOUBLE:
+                                leftOperand = parseInt(<string>this._leftOperand.getValue());
+                                rightOperand = parseFloat(<string>this._rightOperand.getValue());
+
+                                result = leftOperand <= rightOperand;
+
+                                return result;
+                            case DType.INT:
+                                leftOperand = parseInt(<string>this._leftOperand.getValue());
+                                rightOperand = parseInt(<string>this._rightOperand.getValue());
+
+                                result = leftOperand <= rightOperand;
+
+                                return result;
+                            default:
+                                alert("Los operandos no son válidos para realizar una comparación.");
+
+                                return;
+                        }
+                    case DType.STRING:
+                        switch (this._rightOperand.getType()) {
+                            case DType.STRING:
+                                leftOperand = this._leftOperand.getValue().toString();
+                                rightOperand = this._rightOperand.getValue().toString();
+
+                                result = leftOperand <= rightOperand;
+
+                                return result;
+                            default:
+                                alert("Los operandos no son válidos para realizar una comparación.");
+
+                                return;
+                        }
+                    default:
+                        return; // Este caso nunca se ejecutará.
                 }
             case OperationType.MODULUS:
                 this._type = this.getQuotientType(this._leftOperand.getType(), this._rightOperand.getType());
