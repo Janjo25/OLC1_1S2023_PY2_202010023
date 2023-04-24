@@ -164,6 +164,7 @@ expression
     | FALSE                                                                 { $$ = new Variable(DeclarationType.BOOLEAN, $1); }
     | INT_VALUE                                                             { $$ = new Variable(DeclarationType.INT, $1); }
     | STRING_VALUE                                                          { $$ = new Variable(DeclarationType.STRING, $1); }
+    | SUBTRACTION expression %prec UMINUS                                   { $$ = new Operation(OperationType.NEGATION, $2, null); }
     | TRUE                                                                  { $$ = new Variable(DeclarationType.BOOLEAN, $1); }
     | expression ADDITION expression                                        { $$ = new Operation(OperationType.ADDITION, $1, $3); }
     | expression DIVISION expression                                        { $$ = new Operation(OperationType.DIVISION, $1, $3); }
