@@ -30,8 +30,8 @@ const {Variable} = require("../expressions/declaration-assignment/variable");
 \"[^\"]*\"                      return 'STRING_VALUE';
 
 /* datos primitivos */
-[0-9]+                          return 'INT_VALUE';
 [0-9]+\.[0-9]+                  return 'DOUBLE_VALUE';
+[0-9]+                          return 'INT_VALUE';
 \'.?\'                          return 'CHAR_VALUE';
 
 /* operadores aritméticos */
