@@ -283,6 +283,66 @@ class Operation extends Expression {
                     default:
                         return; // Este caso nunca se ejecutará.
                 }
+            case OperationType.AND:
+                this._type = DType.BOOLEAN;
+
+                switch (this._leftOperand.getType()) {
+                    case DType.BOOLEAN:
+                        leftOperand = this._leftOperand.getValue().toString() == 'true';
+
+                        break;
+                    case DType.CHAR:
+                        leftOperand = this._leftOperand.getValue().toString().replace(/'/g, '').charCodeAt(0);
+
+                        leftOperand = parseInt(String(leftOperand));
+
+                        break;
+                    case DType.DOUBLE:
+                        leftOperand = parseFloat(<string>this._leftOperand.getValue());
+
+                        break;
+                    case DType.INT:
+                        leftOperand = parseInt(<string>this._leftOperand.getValue());
+
+                        break;
+                    case DType.STRING:
+                        leftOperand = this._leftOperand.getValue().toString();
+
+                        break;
+                    default:
+                        return; // Este caso nunca se ejecutará.
+                }
+
+                switch (this._rightOperand.getType()) {
+                    case DType.BOOLEAN:
+                        rightOperand = this._rightOperand.getValue().toString() == 'true';
+
+                        break;
+                    case DType.CHAR:
+                        rightOperand = this._rightOperand.getValue().toString().replace(/'/g, '').charCodeAt(0);
+
+                        rightOperand = parseInt(String(rightOperand));
+
+                        break;
+                    case DType.DOUBLE:
+                        rightOperand = parseFloat(<string>this._rightOperand.getValue());
+
+                        break;
+                    case DType.INT:
+                        rightOperand = parseInt(<string>this._rightOperand.getValue());
+
+                        break;
+                    case DType.STRING:
+                        rightOperand = this._rightOperand.getValue().toString();
+
+                        break;
+                    default:
+                        return; // Este caso nunca se ejecutará.
+                }
+
+                result = leftOperand && rightOperand;
+
+                return result;
             case OperationType.DIVISION:
                 this._type = this.getQuotientType(this._leftOperand.getType(), this._rightOperand.getType());
 
@@ -1342,6 +1402,99 @@ class Operation extends Expression {
 
                         return;
                 }
+            case OperationType.NOT:
+                this._type = DType.BOOLEAN;
+
+                switch (this._leftOperand.getType()) {
+                    case DType.BOOLEAN:
+                        leftOperand = this._leftOperand.getValue().toString() == 'true';
+
+                        break;
+                    case DType.CHAR:
+                        leftOperand = this._leftOperand.getValue().toString().replace(/'/g, '').charCodeAt(0);
+
+                        leftOperand = parseInt(String(leftOperand));
+
+                        break;
+                    case DType.DOUBLE:
+                        leftOperand = parseFloat(<string>this._leftOperand.getValue());
+
+                        break;
+                    case DType.INT:
+                        leftOperand = parseInt(<string>this._leftOperand.getValue());
+
+                        break;
+                    case DType.STRING:
+                        leftOperand = this._leftOperand.getValue().toString();
+
+                        break;
+                    default:
+                        return; // Este caso nunca se ejecutará.
+                }
+
+                result = !leftOperand;
+
+                return result;
+            case OperationType.OR:
+                this._type = DType.BOOLEAN;
+
+                switch (this._leftOperand.getType()) {
+                    case DType.BOOLEAN:
+                        leftOperand = this._leftOperand.getValue().toString() == 'true';
+
+                        break;
+                    case DType.CHAR:
+                        leftOperand = this._leftOperand.getValue().toString().replace(/'/g, '').charCodeAt(0);
+
+                        leftOperand = parseInt(String(leftOperand));
+
+                        break;
+                    case DType.DOUBLE:
+                        leftOperand = parseFloat(<string>this._leftOperand.getValue());
+
+                        break;
+                    case DType.INT:
+                        leftOperand = parseInt(<string>this._leftOperand.getValue());
+
+                        break;
+                    case DType.STRING:
+                        leftOperand = this._leftOperand.getValue().toString();
+
+                        break;
+                    default:
+                        return; // Este caso nunca se ejecutará.
+                }
+
+                switch (this._rightOperand.getType()) {
+                    case DType.BOOLEAN:
+                        rightOperand = this._rightOperand.getValue().toString() == 'true';
+
+                        break;
+                    case DType.CHAR:
+                        rightOperand = this._rightOperand.getValue().toString().replace(/'/g, '').charCodeAt(0);
+
+                        rightOperand = parseInt(String(rightOperand));
+
+                        break;
+                    case DType.DOUBLE:
+                        rightOperand = parseFloat(<string>this._rightOperand.getValue());
+
+                        break;
+                    case DType.INT:
+                        rightOperand = parseInt(<string>this._rightOperand.getValue());
+
+                        break;
+                    case DType.STRING:
+                        rightOperand = this._rightOperand.getValue().toString();
+
+                        break;
+                    default:
+                        return; // Este caso nunca se ejecutará.
+                }
+
+                result = leftOperand || rightOperand;
+
+                return result;
             case OperationType.SUBTRACTION:
                 this._type = this.getDifferenceType(this._leftOperand.getType(), this._rightOperand.getType());
 
