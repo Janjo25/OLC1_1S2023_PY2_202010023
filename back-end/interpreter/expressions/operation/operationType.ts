@@ -1,5 +1,6 @@
 enum OperationType {
     ADDITION,
+    AND,
     DIVISION,
     EQUALITY,
     EXPONENTIATION,
@@ -11,6 +12,8 @@ enum OperationType {
     MODULUS,
     MULTIPLICATION,
     NEGATION,
+    NOT,
+    OR,
     SUBTRACTION,
 }
 
