@@ -167,6 +167,7 @@ expression
     | SUBTRACTION expression %prec UMINUS                                   { $$ = new Operation(OperationType.NEGATION, $2, null); }
     | TRUE                                                                  { $$ = new Variable(DeclarationType.BOOLEAN, $1); }
     | expression ADDITION expression                                        { $$ = new Operation(OperationType.ADDITION, $1, $3); }
+    | expression AND expression                                             { $$ = new Operation(OperationType.AND, $1, $3); }
     | expression DIVISION expression                                        { $$ = new Operation(OperationType.DIVISION, $1, $3); }
     | expression EQUALITY expression                                        { $$ = new Operation(OperationType.EQUALITY, $1, $3); }
     | expression EXPONENTIATION expression                                  { $$ = new Operation(OperationType.EXPONENTIATION, $1, $3); }
@@ -177,5 +178,7 @@ expression
     | expression LESS_THAN_OR_EQUAL_TO expression                           { $$ = new Operation(OperationType.LESS_THAN_OR_EQUAL_TO, $1, $3); }
     | expression MODULUS expression                                         { $$ = new Operation(OperationType.MODULUS, $1, $3); }
     | expression MULTIPLICATION expression                                  { $$ = new Operation(OperationType.MULTIPLICATION, $1, $3); }
+    | expression NOT expression                                             { $$ = new Operation(OperationType.NOT, $1, $3); }
+    | expression OR expression                                              { $$ = new Operation(OperationType.OR, $1, $3); }
     | expression SUBTRACTION expression                                     { $$ = new Operation(OperationType.SUBTRACTION, $1, $3); }
     ;
