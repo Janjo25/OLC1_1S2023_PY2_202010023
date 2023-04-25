@@ -162,3 +162,15 @@ print('Z' >= 25);
 print('Z' >= 25.50);
 print('Z' >= 'A');
 print("foo" >= "bar");
+
+// PruebasLógicas-OR
+print(false || false);
+print(false || true);
+
+// PruebasLógicas-AND
+print(false && false);
+print(true && true);
+
+// PruebasLógicas-NOT
+print(!false);
+print(!true);
