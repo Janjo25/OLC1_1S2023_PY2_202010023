@@ -1,5 +1,7 @@
+import {Environment} from "../environment";
+
 class Statement {
-    execute(): void {
+    execute(environment: Environment): void {
     };
 }
 

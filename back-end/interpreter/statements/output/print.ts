@@ -1,3 +1,4 @@
+import {Environment} from "../../environment";
 import {Operation} from "../../expressions/operation/operation";
 import {Statement} from "../statement";
 import {Variable} from "../../expressions/declaration-assignment/variable";
@@ -12,8 +13,8 @@ class Print extends Statement {
         this._expression = expression;
     };
 
-    execute(): void {
-        output.append("-> " + this._expression.getValue() + '\n');
+    execute(environment: Environment): void {
+        output.append("-> " + this._expression.getValue(environment) + '\n');
     };
 }
 

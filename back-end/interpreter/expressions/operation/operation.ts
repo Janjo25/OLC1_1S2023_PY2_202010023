@@ -1,4 +1,5 @@
 import {DeclarationType as DType} from "../declaration-assignment/declarationType";
+import {Environment} from "../../environment";
 import {Expression} from "../expression";
 import {OperationType} from "./operationType";
 import {Variable} from "../declaration-assignment/variable";
@@ -76,43 +77,55 @@ class Operation extends Expression {
         return null;
     };
 
-    getType(): null | number {
+    getType(environment: Environment): null | number {
         return this._type;
     };
 
-    getValue(): boolean | number | string | undefined {
-        let leftOperand;
-        let rightOperand;
+    getValue(environment: Environment): boolean | number | string | undefined {
+        let leftType!: number;
+        let rightType!: number;
 
-        let result;
+        let leftValue!: boolean | number | string; // Se usa el "!" para aclarar que la variable nunca será nula.
+        let rightValue!: boolean | number | string;
+
+        let leftOperand: boolean | number | string;
+        let rightOperand: boolean | number | string;
+
+        let result: boolean | number | string;
+
+        leftValue = this._leftOperand.getValue(environment);
+        leftType = this._leftOperand.getType(environment);
+
+        rightValue = this._rightOperand.getValue(environment);
+        rightType = this._rightOperand.getType(environment);
 
         switch (this._operationType) {
             case OperationType.ADDITION:
-                this._type = this.getSumType(this._leftOperand.getType(), this._rightOperand.getType());
+                this._type = this.getSumType(leftType, rightType);
 
-                switch (this._leftOperand.getType()) {
+                switch (leftType) {
                     case DType.BOOLEAN:
-                        switch (this._rightOperand.getType()) {
+                        switch (rightType) {
                             case DType.DOUBLE:
-                                const trueValue = parseFloat(String(1));
-                                const falseValue = parseFloat(String(0));
+                                const trueValue: number = parseFloat(String(1));
+                                const falseValue: number = parseFloat(String(0));
 
-                                leftOperand = this._leftOperand.getValue() == 'true' ? trueValue : falseValue;
-                                rightOperand = parseFloat(<string>this._rightOperand.getValue());
+                                leftOperand = leftValue == 'true' ? trueValue : falseValue;
+                                rightOperand = parseFloat(<string>rightValue);
 
                                 result = leftOperand + rightOperand;
 
                                 return result;
                             case DType.INT:
-                                leftOperand = this._leftOperand.getValue() == 'true' ? 1 : 0;
-                                rightOperand = parseInt(<string>this._rightOperand.getValue());
+                                leftOperand = leftValue == 'true' ? 1 : 0;
+                                rightOperand = parseInt(<string>rightValue);
 
                                 result = leftOperand + rightOperand;
 
                                 return result;
                             case DType.STRING:
-                                leftOperand = this._leftOperand.getValue() == 'true' ? '1' : '0';
-                                rightOperand = this._rightOperand.getValue().toString().replace(/"/g, '');
+                                leftOperand = leftValue == 'true' ? '1' : '0';
+                                rightOperand = rightValue.toString().replace(/"/g, '');
 
                                 result = leftOperand + rightOperand;
 
@@ -123,31 +136,31 @@ class Operation extends Expression {
                                 return;
                         }
                     case DType.CHAR:
-                        switch (this._rightOperand.getType()) {
+                        switch (rightType) {
                             case DType.CHAR:
-                                leftOperand = this._leftOperand.getValue().toString().replace(/'/g, '');
-                                rightOperand = this._rightOperand.getValue().toString().replace(/'/g, '');
+                                leftOperand = leftValue.toString().replace(/'/g, '');
+                                rightOperand = rightValue.toString().replace(/'/g, '');
 
                                 result = leftOperand + rightOperand;
 
                                 return result;
                             case DType.DOUBLE:
-                                leftOperand = this._leftOperand.getValue().toString().replace(/'/g, '').charCodeAt(0);
-                                rightOperand = this._rightOperand.getValue();
+                                leftOperand = leftValue.toString().replace(/'/g, '').charCodeAt(0);
+                                rightOperand = rightValue;
 
                                 result = parseFloat(String(leftOperand)) + parseFloat(String(rightOperand));
 
                                 return result;
                             case DType.INT:
-                                leftOperand = this._leftOperand.getValue().toString().replace(/'/g, '').charCodeAt(0);
-                                rightOperand = parseInt(<string>this._rightOperand.getValue());
+                                leftOperand = leftValue.toString().replace(/'/g, '').charCodeAt(0);
+                                rightOperand = parseInt(<string>rightValue);
 
                                 result = leftOperand + rightOperand;
 
                                 return result;
                             case DType.STRING:
-                                leftOperand = this._leftOperand.getValue().toString().replace(/'/g, '');
-                                rightOperand = this._rightOperand.getValue().toString().replace(/"/g, '');
+                                leftOperand = leftValue.toString().replace(/'/g, '');
+                                rightOperand = rightValue.toString().replace(/"/g, '');
 
                                 result = leftOperand + rightOperand;
 
@@ -158,41 +171,41 @@ class Operation extends Expression {
                                 return;
                         }
                     case DType.DOUBLE:
-                        switch (this._rightOperand.getType()) {
+                        switch (rightType) {
                             case DType.BOOLEAN:
-                                const trueValue = parseFloat(String(1));
-                                const falseValue = parseFloat(String(0));
+                                const trueValue: number = parseFloat(String(1));
+                                const falseValue: number = parseFloat(String(0));
 
-                                leftOperand = parseFloat(<string>this._leftOperand.getValue());
-                                rightOperand = this._rightOperand.getValue() == 'true' ? trueValue : falseValue;
+                                leftOperand = parseFloat(<string>leftValue);
+                                rightOperand = rightValue == 'true' ? trueValue : falseValue;
 
                                 result = leftOperand + rightOperand;
 
                                 return result;
                             case DType.CHAR:
-                                leftOperand = this._leftOperand.getValue();
-                                rightOperand = this._rightOperand.getValue().toString().replace(/'/g, '').charCodeAt(0);
+                                leftOperand = leftValue;
+                                rightOperand = rightValue.toString().replace(/'/g, '').charCodeAt(0);
 
                                 result = parseFloat(String(leftOperand)) + parseFloat(String(rightOperand));
 
                                 return result;
                             case DType.DOUBLE:
-                                leftOperand = parseFloat(<string>this._leftOperand.getValue());
-                                rightOperand = parseFloat(<string>this._rightOperand.getValue());
+                                leftOperand = parseFloat(<string>leftValue);
+                                rightOperand = parseFloat(<string>rightValue);
 
                                 result = leftOperand + rightOperand;
 
                                 return result;
                             case DType.INT:
-                                leftOperand = parseFloat(<string>this._leftOperand.getValue());
-                                rightOperand = parseFloat(<string>this._rightOperand.getValue());
+                                leftOperand = parseFloat(<string>leftValue);
+                                rightOperand = parseFloat(<string>rightValue);
 
                                 result = leftOperand + rightOperand;
 
                                 return result;
                             case DType.STRING:
-                                leftOperand = this._leftOperand.getValue().toString();
-                                rightOperand = this._rightOperand.getValue().toString().replace(/"/g, '');
+                                leftOperand = leftValue.toString();
+                                rightOperand = rightValue.toString().replace(/"/g, '');
 
                                 result = leftOperand + rightOperand;
 
@@ -201,38 +214,38 @@ class Operation extends Expression {
                                 return; // Este caso nunca se ejecutará.
                         }
                     case DType.INT:
-                        switch (this._rightOperand.getType()) {
+                        switch (rightType) {
                             case DType.BOOLEAN:
-                                leftOperand = parseInt(<string>this._leftOperand.getValue());
-                                rightOperand = this._rightOperand.getValue() == 'true' ? 1 : 0;
+                                leftOperand = parseInt(<string>leftValue);
+                                rightOperand = rightValue == 'true' ? 1 : 0;
 
                                 result = leftOperand + rightOperand;
 
                                 return result;
                             case DType.CHAR:
-                                leftOperand = parseInt(<string>this._leftOperand.getValue());
-                                rightOperand = this._rightOperand.getValue().toString().replace(/'/g, '').charCodeAt(0);
+                                leftOperand = parseInt(<string>leftValue);
+                                rightOperand = rightValue.toString().replace(/'/g, '').charCodeAt(0);
 
                                 result = leftOperand + rightOperand;
 
                                 return result;
                             case DType.DOUBLE:
-                                leftOperand = parseFloat(<string>this._leftOperand.getValue());
-                                rightOperand = parseFloat(<string>this._rightOperand.getValue());
+                                leftOperand = parseFloat(<string>leftValue);
+                                rightOperand = parseFloat(<string>rightValue);
 
                                 result = leftOperand + rightOperand;
 
                                 return result;
                             case DType.INT:
-                                leftOperand = parseInt(<string>this._leftOperand.getValue());
-                                rightOperand = parseInt(<string>this._rightOperand.getValue());
+                                leftOperand = parseInt(<string>leftValue);
+                                rightOperand = parseInt(<string>rightValue);
 
                                 result = leftOperand + rightOperand;
 
                                 return result;
                             case DType.STRING:
-                                leftOperand = this._leftOperand.getValue().toString();
-                                rightOperand = this._rightOperand.getValue().toString().replace(/"/g, '');
+                                leftOperand = leftValue.toString();
+                                rightOperand = rightValue.toString().replace(/"/g, '');
 
                                 result = leftOperand + rightOperand;
 
@@ -241,38 +254,38 @@ class Operation extends Expression {
                                 return; // Este caso nunca se ejecutará.
                         }
                     case DType.STRING:
-                        switch (this._rightOperand.getType()) {
+                        switch (rightType) {
                             case DType.BOOLEAN:
-                                leftOperand = this._leftOperand.getValue().toString().replace(/"/g, '');
-                                rightOperand = this._rightOperand.getValue() == 'true' ? '1' : '0';
+                                leftOperand = leftValue.toString().replace(/"/g, '');
+                                rightOperand = rightValue == 'true' ? '1' : '0';
 
                                 result = leftOperand + rightOperand;
 
                                 return result;
                             case DType.CHAR:
-                                leftOperand = this._leftOperand.getValue().toString().replace(/"/g, '');
-                                rightOperand = this._rightOperand.getValue().toString().replace(/'/g, '');
+                                leftOperand = leftValue.toString().replace(/"/g, '');
+                                rightOperand = rightValue.toString().replace(/'/g, '');
 
                                 result = leftOperand + rightOperand;
 
                                 return result;
                             case DType.DOUBLE:
-                                leftOperand = this._leftOperand.getValue().toString().replace(/"/g, '');
-                                rightOperand = this._rightOperand.getValue().toString();
+                                leftOperand = leftValue.toString().replace(/"/g, '');
+                                rightOperand = rightValue.toString();
 
                                 result = leftOperand + rightOperand;
 
                                 return result;
                             case DType.INT:
-                                leftOperand = this._leftOperand.getValue().toString().replace(/"/g, '');
-                                rightOperand = this._rightOperand.getValue().toString();
+                                leftOperand = leftValue.toString().replace(/"/g, '');
+                                rightOperand = rightValue.toString();
 
                                 result = leftOperand + rightOperand;
 
                                 return result;
                             case DType.STRING:
-                                leftOperand = this._leftOperand.getValue().toString().replace(/"/g, '');
-                                rightOperand = this._rightOperand.getValue().toString().replace(/"/g, '');
+                                leftOperand = leftValue.toString().replace(/"/g, '');
+                                rightOperand = rightValue.toString().replace(/"/g, '');
 
                                 result = leftOperand + rightOperand;
 
@@ -286,54 +299,54 @@ class Operation extends Expression {
             case OperationType.AND:
                 this._type = DType.BOOLEAN;
 
-                switch (this._leftOperand.getType()) {
+                switch (leftType) {
                     case DType.BOOLEAN:
-                        leftOperand = this._leftOperand.getValue().toString() == 'true';
+                        leftOperand = leftValue.toString() == 'true';
 
                         break;
                     case DType.CHAR:
-                        leftOperand = this._leftOperand.getValue().toString().replace(/'/g, '').charCodeAt(0);
+                        leftOperand = leftValue.toString().replace(/'/g, '').charCodeAt(0);
 
                         leftOperand = parseInt(String(leftOperand));
 
                         break;
                     case DType.DOUBLE:
-                        leftOperand = parseFloat(<string>this._leftOperand.getValue());
+                        leftOperand = parseFloat(<string>leftValue);
 
                         break;
                     case DType.INT:
-                        leftOperand = parseInt(<string>this._leftOperand.getValue());
+                        leftOperand = parseInt(<string>leftValue);
 
                         break;
                     case DType.STRING:
-                        leftOperand = this._leftOperand.getValue().toString();
+                        leftOperand = leftValue.toString();
 
                         break;
                     default:
                         return; // Este caso nunca se ejecutará.
                 }
 
-                switch (this._rightOperand.getType()) {
+                switch (rightType) {
                     case DType.BOOLEAN:
-                        rightOperand = this._rightOperand.getValue().toString() == 'true';
+                        rightOperand = rightValue.toString() == 'true';
 
                         break;
                     case DType.CHAR:
-                        rightOperand = this._rightOperand.getValue().toString().replace(/'/g, '').charCodeAt(0);
+                        rightOperand = rightValue.toString().replace(/'/g, '').charCodeAt(0);
 
                         rightOperand = parseInt(String(rightOperand));
 
                         break;
                     case DType.DOUBLE:
-                        rightOperand = parseFloat(<string>this._rightOperand.getValue());
+                        rightOperand = parseFloat(<string>rightValue);
 
                         break;
                     case DType.INT:
-                        rightOperand = parseInt(<string>this._rightOperand.getValue());
+                        rightOperand = parseInt(<string>rightValue);
 
                         break;
                     case DType.STRING:
-                        rightOperand = this._rightOperand.getValue().toString();
+                        rightOperand = rightValue.toString();
 
                         break;
                     default:
@@ -344,14 +357,14 @@ class Operation extends Expression {
 
                 return result;
             case OperationType.DIVISION:
-                this._type = this.getQuotientType(this._leftOperand.getType(), this._rightOperand.getType());
+                this._type = this.getQuotientType(leftType, rightType);
 
-                switch (this._leftOperand.getType()) {
+                switch (leftType) {
                     case DType.CHAR:
-                        switch (this._rightOperand.getType()) {
+                        switch (rightType) {
                             case DType.DOUBLE:
-                                leftOperand = this._leftOperand.getValue().toString().replace(/'/g, '').charCodeAt(0);
-                                rightOperand = this._rightOperand.getValue();
+                                leftOperand = leftValue.toString().replace(/'/g, '').charCodeAt(0);
+                                rightOperand = rightValue;
 
                                 if (rightOperand != 0) {
                                     result = parseFloat(String(leftOperand)) / parseFloat(String(rightOperand));
@@ -363,8 +376,8 @@ class Operation extends Expression {
 
                                 return;
                             case DType.INT:
-                                leftOperand = this._leftOperand.getValue().toString().replace(/'/g, '').charCodeAt(0);
-                                rightOperand = this._rightOperand.getValue();
+                                leftOperand = leftValue.toString().replace(/'/g, '').charCodeAt(0);
+                                rightOperand = rightValue;
 
                                 if (rightOperand != 0) {
                                     result = parseFloat(String(leftOperand)) / parseFloat(String(rightOperand));
@@ -381,10 +394,10 @@ class Operation extends Expression {
                                 return;
                         }
                     case DType.DOUBLE:
-                        switch (this._rightOperand.getType()) {
+                        switch (rightType) {
                             case DType.CHAR:
-                                leftOperand = this._leftOperand.getValue();
-                                rightOperand = this._rightOperand.getValue().toString().replace(/'/g, '').charCodeAt(0);
+                                leftOperand = leftValue;
+                                rightOperand = rightValue.toString().replace(/'/g, '').charCodeAt(0);
 
                                 if (rightOperand != 0) {
                                     result = parseFloat(String(leftOperand)) / parseFloat(String(rightOperand));
@@ -396,8 +409,8 @@ class Operation extends Expression {
 
                                 return;
                             case DType.DOUBLE:
-                                leftOperand = parseFloat(<string>this._leftOperand.getValue());
-                                rightOperand = parseFloat(<string>this._rightOperand.getValue());
+                                leftOperand = parseFloat(<string>leftValue);
+                                rightOperand = parseFloat(<string>rightValue);
 
                                 if (rightOperand != 0) {
                                     result = leftOperand / rightOperand;
@@ -409,8 +422,8 @@ class Operation extends Expression {
 
                                 return;
                             case DType.INT:
-                                leftOperand = parseFloat(<string>this._leftOperand.getValue());
-                                rightOperand = parseFloat(<string>this._rightOperand.getValue());
+                                leftOperand = parseFloat(<string>leftValue);
+                                rightOperand = parseFloat(<string>rightValue);
 
                                 if (rightOperand != 0) {
                                     result = leftOperand / rightOperand;
@@ -427,10 +440,10 @@ class Operation extends Expression {
                                 return;
                         }
                     case DType.INT:
-                        switch (this._rightOperand.getType()) {
+                        switch (rightType) {
                             case DType.CHAR:
-                                leftOperand = this._leftOperand.getValue();
-                                rightOperand = this._rightOperand.getValue().toString().replace(/'/g, '').charCodeAt(0);
+                                leftOperand = leftValue;
+                                rightOperand = rightValue.toString().replace(/'/g, '').charCodeAt(0);
 
                                 if (rightOperand != 0) {
                                     result = parseFloat(String(leftOperand)) / parseFloat(String(rightOperand));
@@ -442,8 +455,8 @@ class Operation extends Expression {
 
                                 return;
                             case DType.DOUBLE:
-                                leftOperand = parseFloat(<string>this._leftOperand.getValue());
-                                rightOperand = parseFloat(<string>this._rightOperand.getValue());
+                                leftOperand = parseFloat(<string>leftValue);
+                                rightOperand = parseFloat(<string>rightValue);
 
                                 if (rightOperand != 0) {
                                     result = leftOperand / rightOperand;
@@ -455,8 +468,8 @@ class Operation extends Expression {
 
                                 return;
                             case DType.INT:
-                                leftOperand = parseFloat(<string>this._leftOperand.getValue());
-                                rightOperand = parseFloat(<string>this._rightOperand.getValue());
+                                leftOperand = parseFloat(<string>leftValue);
+                                rightOperand = parseFloat(<string>rightValue);
 
                                 if (rightOperand != 0) {
                                     result = leftOperand / rightOperand;
@@ -480,12 +493,12 @@ class Operation extends Expression {
             case OperationType.EQUALITY:
                 this._type = DType.BOOLEAN;
 
-                switch (this._leftOperand.getType()) {
+                switch (leftType) {
                     case DType.BOOLEAN:
-                        switch (this._rightOperand.getType()) {
+                        switch (rightType) {
                             case DType.BOOLEAN:
-                                leftOperand = this._leftOperand.getValue().toString() == 'true';
-                                rightOperand = this._rightOperand.getValue().toString() == 'true';
+                                leftOperand = leftValue.toString() == 'true';
+                                rightOperand = rightValue.toString() == 'true';
 
                                 result = leftOperand == rightOperand;
 
@@ -496,24 +509,24 @@ class Operation extends Expression {
                                 return;
                         }
                     case DType.CHAR:
-                        switch (this._rightOperand.getType()) {
+                        switch (rightType) {
                             case DType.CHAR:
-                                leftOperand = this._leftOperand.getValue().toString().replace(/'/g, '').charCodeAt(0);
-                                rightOperand = this._rightOperand.getValue().toString().replace(/'/g, '').charCodeAt(0);
+                                leftOperand = leftValue.toString().replace(/'/g, '').charCodeAt(0);
+                                rightOperand = rightValue.toString().replace(/'/g, '').charCodeAt(0);
 
                                 result = leftOperand == rightOperand;
 
                                 return result;
                             case DType.DOUBLE:
-                                leftOperand = this._leftOperand.getValue().toString().replace(/'/g, '').charCodeAt(0);
-                                rightOperand = this._rightOperand.getValue();
+                                leftOperand = leftValue.toString().replace(/'/g, '').charCodeAt(0);
+                                rightOperand = rightValue;
 
                                 result = parseFloat(String(leftOperand)) == parseFloat(<string>rightOperand);
 
                                 return result;
                             case DType.INT:
-                                leftOperand = this._leftOperand.getValue().toString().replace(/'/g, '').charCodeAt(0);
-                                rightOperand = this._rightOperand.getValue();
+                                leftOperand = leftValue.toString().replace(/'/g, '').charCodeAt(0);
+                                rightOperand = rightValue;
 
                                 result = parseInt(String(leftOperand)) == parseInt(<string>rightOperand);
 
@@ -524,24 +537,24 @@ class Operation extends Expression {
                                 return;
                         }
                     case DType.DOUBLE:
-                        switch (this._rightOperand.getType()) {
+                        switch (rightType) {
                             case DType.CHAR:
-                                leftOperand = this._leftOperand.getValue();
-                                rightOperand = this._rightOperand.getValue().toString().replace(/'/g, '').charCodeAt(0);
+                                leftOperand = leftValue;
+                                rightOperand = rightValue.toString().replace(/'/g, '').charCodeAt(0);
 
                                 result = parseFloat(<string>leftOperand) == parseFloat(String(rightOperand));
 
                                 return result;
                             case DType.DOUBLE:
-                                leftOperand = parseFloat(<string>this._leftOperand.getValue());
-                                rightOperand = parseFloat(<string>this._rightOperand.getValue());
+                                leftOperand = parseFloat(<string>leftValue);
+                                rightOperand = parseFloat(<string>rightValue);
 
                                 result = leftOperand == rightOperand;
 
                                 return result;
                             case DType.INT:
-                                leftOperand = parseFloat(<string>this._leftOperand.getValue());
-                                rightOperand = parseInt(<string>this._rightOperand.getValue());
+                                leftOperand = parseFloat(<string>leftValue);
+                                rightOperand = parseInt(<string>rightValue);
 
                                 result = leftOperand == rightOperand;
 
@@ -552,24 +565,24 @@ class Operation extends Expression {
                                 return;
                         }
                     case DType.INT:
-                        switch (this._rightOperand.getType()) {
+                        switch (rightType) {
                             case DType.CHAR:
-                                leftOperand = parseInt(<string>this._leftOperand.getValue());
-                                rightOperand = this._rightOperand.getValue().toString().replace(/'/g, '').charCodeAt(0);
+                                leftOperand = parseInt(<string>leftValue);
+                                rightOperand = rightValue.toString().replace(/'/g, '').charCodeAt(0);
 
                                 result = leftOperand == rightOperand;
 
                                 return result;
                             case DType.DOUBLE:
-                                leftOperand = parseInt(<string>this._leftOperand.getValue());
-                                rightOperand = parseFloat(<string>this._rightOperand.getValue());
+                                leftOperand = parseInt(<string>leftValue);
+                                rightOperand = parseFloat(<string>rightValue);
 
                                 result = leftOperand == rightOperand;
 
                                 return result;
                             case DType.INT:
-                                leftOperand = parseInt(<string>this._leftOperand.getValue());
-                                rightOperand = parseInt(<string>this._rightOperand.getValue());
+                                leftOperand = parseInt(<string>leftValue);
+                                rightOperand = parseInt(<string>rightValue);
 
                                 result = leftOperand == rightOperand;
 
@@ -580,10 +593,10 @@ class Operation extends Expression {
                                 return;
                         }
                     case DType.STRING:
-                        switch (this._rightOperand.getType()) {
+                        switch (rightType) {
                             case DType.STRING:
-                                leftOperand = this._leftOperand.getValue().toString();
-                                rightOperand = this._rightOperand.getValue().toString();
+                                leftOperand = leftValue.toString();
+                                rightOperand = rightValue.toString();
 
                                 result = leftOperand == rightOperand;
 
@@ -597,21 +610,21 @@ class Operation extends Expression {
                         return; // Este caso nunca se ejecutará.
                 }
             case OperationType.EXPONENTIATION:
-                this._type = this.getExponentiationType(this._leftOperand.getType(), this._rightOperand.getType());
+                this._type = this.getExponentiationType(leftType, rightType);
 
-                switch (this._leftOperand.getType()) {
+                switch (leftType) {
                     case DType.DOUBLE:
-                        switch (this._rightOperand.getType()) {
+                        switch (rightType) {
                             case DType.DOUBLE:
-                                leftOperand = parseFloat(<string>this._leftOperand.getValue());
-                                rightOperand = parseFloat(<string>this._rightOperand.getValue());
+                                leftOperand = parseFloat(<string>leftValue);
+                                rightOperand = parseFloat(<string>rightValue);
 
                                 result = Math.pow(leftOperand, rightOperand);
 
                                 return result;
                             case DType.INT:
-                                leftOperand = parseFloat(<string>this._leftOperand.getValue());
-                                rightOperand = parseFloat(<string>this._rightOperand.getValue());
+                                leftOperand = parseFloat(<string>leftValue);
+                                rightOperand = parseFloat(<string>rightValue);
 
                                 result = Math.pow(leftOperand, rightOperand);
 
@@ -622,17 +635,17 @@ class Operation extends Expression {
                                 return;
                         }
                     case DType.INT:
-                        switch (this._rightOperand.getType()) {
+                        switch (rightType) {
                             case DType.DOUBLE:
-                                leftOperand = parseFloat(<string>this._leftOperand.getValue());
-                                rightOperand = parseFloat(<string>this._rightOperand.getValue());
+                                leftOperand = parseFloat(<string>leftValue);
+                                rightOperand = parseFloat(<string>rightValue);
 
                                 result = Math.pow(leftOperand, rightOperand);
 
                                 return result;
                             case DType.INT:
-                                leftOperand = parseInt(<string>this._leftOperand.getValue());
-                                rightOperand = parseInt(<string>this._rightOperand.getValue());
+                                leftOperand = parseInt(<string>leftValue);
+                                rightOperand = parseInt(<string>rightValue);
 
                                 result = Math.pow(leftOperand, rightOperand);
 
@@ -650,12 +663,12 @@ class Operation extends Expression {
             case OperationType.GREATER_THAN:
                 this._type = DType.BOOLEAN;
 
-                switch (this._leftOperand.getType()) {
+                switch (leftType) {
                     case DType.BOOLEAN:
-                        switch (this._rightOperand.getType()) {
+                        switch (rightType) {
                             case DType.BOOLEAN:
-                                leftOperand = this._leftOperand.getValue().toString() == 'true';
-                                rightOperand = this._rightOperand.getValue().toString() == 'true';
+                                leftOperand = leftValue.toString() == 'true';
+                                rightOperand = rightValue.toString() == 'true';
 
                                 result = leftOperand > rightOperand;
 
@@ -666,24 +679,24 @@ class Operation extends Expression {
                                 return;
                         }
                     case DType.CHAR:
-                        switch (this._rightOperand.getType()) {
+                        switch (rightType) {
                             case DType.CHAR:
-                                leftOperand = this._leftOperand.getValue().toString().replace(/'/g, '').charCodeAt(0);
-                                rightOperand = this._rightOperand.getValue().toString().replace(/'/g, '').charCodeAt(0);
+                                leftOperand = leftValue.toString().replace(/'/g, '').charCodeAt(0);
+                                rightOperand = rightValue.toString().replace(/'/g, '').charCodeAt(0);
 
                                 result = leftOperand > rightOperand;
 
                                 return result;
                             case DType.DOUBLE:
-                                leftOperand = this._leftOperand.getValue().toString().replace(/'/g, '').charCodeAt(0);
-                                rightOperand = this._rightOperand.getValue();
+                                leftOperand = leftValue.toString().replace(/'/g, '').charCodeAt(0);
+                                rightOperand = rightValue;
 
                                 result = parseFloat(String(leftOperand)) > parseFloat(<string>rightOperand);
 
                                 return result;
                             case DType.INT:
-                                leftOperand = this._leftOperand.getValue().toString().replace(/'/g, '').charCodeAt(0);
-                                rightOperand = this._rightOperand.getValue();
+                                leftOperand = leftValue.toString().replace(/'/g, '').charCodeAt(0);
+                                rightOperand = rightValue;
 
                                 result = parseInt(String(leftOperand)) > parseInt(<string>rightOperand);
 
@@ -694,24 +707,24 @@ class Operation extends Expression {
                                 return;
                         }
                     case DType.DOUBLE:
-                        switch (this._rightOperand.getType()) {
+                        switch (rightType) {
                             case DType.CHAR:
-                                leftOperand = this._leftOperand.getValue();
-                                rightOperand = this._rightOperand.getValue().toString().replace(/'/g, '').charCodeAt(0);
+                                leftOperand = leftValue;
+                                rightOperand = rightValue.toString().replace(/'/g, '').charCodeAt(0);
 
                                 result = parseFloat(<string>leftOperand) > parseFloat(String(rightOperand));
 
                                 return result;
                             case DType.DOUBLE:
-                                leftOperand = parseFloat(<string>this._leftOperand.getValue());
-                                rightOperand = parseFloat(<string>this._rightOperand.getValue());
+                                leftOperand = parseFloat(<string>leftValue);
+                                rightOperand = parseFloat(<string>rightValue);
 
                                 result = leftOperand > rightOperand;
 
                                 return result;
                             case DType.INT:
-                                leftOperand = parseFloat(<string>this._leftOperand.getValue());
-                                rightOperand = parseInt(<string>this._rightOperand.getValue());
+                                leftOperand = parseFloat(<string>leftValue);
+                                rightOperand = parseInt(<string>rightValue);
 
                                 result = leftOperand > rightOperand;
 
@@ -722,24 +735,24 @@ class Operation extends Expression {
                                 return;
                         }
                     case DType.INT:
-                        switch (this._rightOperand.getType()) {
+                        switch (rightType) {
                             case DType.CHAR:
-                                leftOperand = parseInt(<string>this._leftOperand.getValue());
-                                rightOperand = this._rightOperand.getValue().toString().replace(/'/g, '').charCodeAt(0);
+                                leftOperand = parseInt(<string>leftValue);
+                                rightOperand = rightValue.toString().replace(/'/g, '').charCodeAt(0);
 
                                 result = leftOperand > rightOperand;
 
                                 return result;
                             case DType.DOUBLE:
-                                leftOperand = parseInt(<string>this._leftOperand.getValue());
-                                rightOperand = parseFloat(<string>this._rightOperand.getValue());
+                                leftOperand = parseInt(<string>leftValue);
+                                rightOperand = parseFloat(<string>rightValue);
 
                                 result = leftOperand > rightOperand;
 
                                 return result;
                             case DType.INT:
-                                leftOperand = parseInt(<string>this._leftOperand.getValue());
-                                rightOperand = parseInt(<string>this._rightOperand.getValue());
+                                leftOperand = parseInt(<string>leftValue);
+                                rightOperand = parseInt(<string>rightValue);
 
                                 result = leftOperand > rightOperand;
 
@@ -750,10 +763,10 @@ class Operation extends Expression {
                                 return;
                         }
                     case DType.STRING:
-                        switch (this._rightOperand.getType()) {
+                        switch (rightType) {
                             case DType.STRING:
-                                leftOperand = this._leftOperand.getValue().toString();
-                                rightOperand = this._rightOperand.getValue().toString();
+                                leftOperand = leftValue.toString();
+                                rightOperand = rightValue.toString();
 
                                 result = leftOperand > rightOperand;
 
@@ -769,12 +782,12 @@ class Operation extends Expression {
             case OperationType.GREATER_THAN_OR_EQUAL_TO:
                 this._type = DType.BOOLEAN;
 
-                switch (this._leftOperand.getType()) {
+                switch (leftType) {
                     case DType.BOOLEAN:
-                        switch (this._rightOperand.getType()) {
+                        switch (rightType) {
                             case DType.BOOLEAN:
-                                leftOperand = this._leftOperand.getValue().toString() == 'true';
-                                rightOperand = this._rightOperand.getValue().toString() == 'true';
+                                leftOperand = leftValue.toString() == 'true';
+                                rightOperand = rightValue.toString() == 'true';
 
                                 result = leftOperand >= rightOperand;
 
@@ -785,24 +798,24 @@ class Operation extends Expression {
                                 return;
                         }
                     case DType.CHAR:
-                        switch (this._rightOperand.getType()) {
+                        switch (rightType) {
                             case DType.CHAR:
-                                leftOperand = this._leftOperand.getValue().toString().replace(/'/g, '').charCodeAt(0);
-                                rightOperand = this._rightOperand.getValue().toString().replace(/'/g, '').charCodeAt(0);
+                                leftOperand = leftValue.toString().replace(/'/g, '').charCodeAt(0);
+                                rightOperand = rightValue.toString().replace(/'/g, '').charCodeAt(0);
 
                                 result = leftOperand >= rightOperand;
 
                                 return result;
                             case DType.DOUBLE:
-                                leftOperand = this._leftOperand.getValue().toString().replace(/'/g, '').charCodeAt(0);
-                                rightOperand = this._rightOperand.getValue();
+                                leftOperand = leftValue.toString().replace(/'/g, '').charCodeAt(0);
+                                rightOperand = rightValue;
 
                                 result = parseFloat(String(leftOperand)) >= parseFloat(<string>rightOperand);
 
                                 return result;
                             case DType.INT:
-                                leftOperand = this._leftOperand.getValue().toString().replace(/'/g, '').charCodeAt(0);
-                                rightOperand = this._rightOperand.getValue();
+                                leftOperand = leftValue.toString().replace(/'/g, '').charCodeAt(0);
+                                rightOperand = rightValue;
 
                                 result = parseInt(String(leftOperand)) >= parseInt(<string>rightOperand);
 
@@ -813,24 +826,24 @@ class Operation extends Expression {
                                 return;
                         }
                     case DType.DOUBLE:
-                        switch (this._rightOperand.getType()) {
+                        switch (rightType) {
                             case DType.CHAR:
-                                leftOperand = this._leftOperand.getValue();
-                                rightOperand = this._rightOperand.getValue().toString().replace(/'/g, '').charCodeAt(0);
+                                leftOperand = leftValue;
+                                rightOperand = rightValue.toString().replace(/'/g, '').charCodeAt(0);
 
                                 result = parseFloat(<string>leftOperand) >= parseFloat(String(rightOperand));
 
                                 return result;
                             case DType.DOUBLE:
-                                leftOperand = parseFloat(<string>this._leftOperand.getValue());
-                                rightOperand = parseFloat(<string>this._rightOperand.getValue());
+                                leftOperand = parseFloat(<string>leftValue);
+                                rightOperand = parseFloat(<string>rightValue);
 
                                 result = leftOperand >= rightOperand;
 
                                 return result;
                             case DType.INT:
-                                leftOperand = parseFloat(<string>this._leftOperand.getValue());
-                                rightOperand = parseInt(<string>this._rightOperand.getValue());
+                                leftOperand = parseFloat(<string>leftValue);
+                                rightOperand = parseInt(<string>rightValue);
 
                                 result = leftOperand >= rightOperand;
 
@@ -841,24 +854,24 @@ class Operation extends Expression {
                                 return;
                         }
                     case DType.INT:
-                        switch (this._rightOperand.getType()) {
+                        switch (rightType) {
                             case DType.CHAR:
-                                leftOperand = parseInt(<string>this._leftOperand.getValue());
-                                rightOperand = this._rightOperand.getValue().toString().replace(/'/g, '').charCodeAt(0);
+                                leftOperand = parseInt(<string>leftValue);
+                                rightOperand = rightValue.toString().replace(/'/g, '').charCodeAt(0);
 
                                 result = leftOperand >= rightOperand;
 
                                 return result;
                             case DType.DOUBLE:
-                                leftOperand = parseInt(<string>this._leftOperand.getValue());
-                                rightOperand = parseFloat(<string>this._rightOperand.getValue());
+                                leftOperand = parseInt(<string>leftValue);
+                                rightOperand = parseFloat(<string>rightValue);
 
                                 result = leftOperand >= rightOperand;
 
                                 return result;
                             case DType.INT:
-                                leftOperand = parseInt(<string>this._leftOperand.getValue());
-                                rightOperand = parseInt(<string>this._rightOperand.getValue());
+                                leftOperand = parseInt(<string>leftValue);
+                                rightOperand = parseInt(<string>rightValue);
 
                                 result = leftOperand >= rightOperand;
 
@@ -869,10 +882,10 @@ class Operation extends Expression {
                                 return;
                         }
                     case DType.STRING:
-                        switch (this._rightOperand.getType()) {
+                        switch (rightType) {
                             case DType.STRING:
-                                leftOperand = this._leftOperand.getValue().toString();
-                                rightOperand = this._rightOperand.getValue().toString();
+                                leftOperand = leftValue.toString();
+                                rightOperand = rightValue.toString();
 
                                 result = leftOperand >= rightOperand;
 
@@ -888,12 +901,12 @@ class Operation extends Expression {
             case OperationType.INEQUALITY:
                 this._type = DType.BOOLEAN;
 
-                switch (this._leftOperand.getType()) {
+                switch (leftType) {
                     case DType.BOOLEAN:
-                        switch (this._rightOperand.getType()) {
+                        switch (rightType) {
                             case DType.BOOLEAN:
-                                leftOperand = this._leftOperand.getValue().toString() == 'true';
-                                rightOperand = this._rightOperand.getValue().toString() == 'true';
+                                leftOperand = leftValue.toString() == 'true';
+                                rightOperand = rightValue.toString() == 'true';
 
                                 result = leftOperand != rightOperand;
 
@@ -904,24 +917,24 @@ class Operation extends Expression {
                                 return;
                         }
                     case DType.CHAR:
-                        switch (this._rightOperand.getType()) {
+                        switch (rightType) {
                             case DType.CHAR:
-                                leftOperand = this._leftOperand.getValue().toString().replace(/'/g, '').charCodeAt(0);
-                                rightOperand = this._rightOperand.getValue().toString().replace(/'/g, '').charCodeAt(0);
+                                leftOperand = leftValue.toString().replace(/'/g, '').charCodeAt(0);
+                                rightOperand = rightValue.toString().replace(/'/g, '').charCodeAt(0);
 
                                 result = leftOperand != rightOperand;
 
                                 return result;
                             case DType.DOUBLE:
-                                leftOperand = this._leftOperand.getValue().toString().replace(/'/g, '').charCodeAt(0);
-                                rightOperand = this._rightOperand.getValue();
+                                leftOperand = leftValue.toString().replace(/'/g, '').charCodeAt(0);
+                                rightOperand = rightValue;
 
                                 result = parseFloat(String(leftOperand)) != parseFloat(<string>rightOperand);
 
                                 return result;
                             case DType.INT:
-                                leftOperand = this._leftOperand.getValue().toString().replace(/'/g, '').charCodeAt(0);
-                                rightOperand = this._rightOperand.getValue();
+                                leftOperand = leftValue.toString().replace(/'/g, '').charCodeAt(0);
+                                rightOperand = rightValue;
 
                                 result = parseInt(String(leftOperand)) != parseInt(<string>rightOperand);
 
@@ -932,24 +945,24 @@ class Operation extends Expression {
                                 return;
                         }
                     case DType.DOUBLE:
-                        switch (this._rightOperand.getType()) {
+                        switch (rightType) {
                             case DType.CHAR:
-                                leftOperand = this._leftOperand.getValue();
-                                rightOperand = this._rightOperand.getValue().toString().replace(/'/g, '').charCodeAt(0);
+                                leftOperand = leftValue;
+                                rightOperand = rightValue.toString().replace(/'/g, '').charCodeAt(0);
 
                                 result = parseFloat(<string>leftOperand) != parseFloat(String(rightOperand));
 
                                 return result;
                             case DType.DOUBLE:
-                                leftOperand = parseFloat(<string>this._leftOperand.getValue());
-                                rightOperand = parseFloat(<string>this._rightOperand.getValue());
+                                leftOperand = parseFloat(<string>leftValue);
+                                rightOperand = parseFloat(<string>rightValue);
 
                                 result = leftOperand != rightOperand;
 
                                 return result;
                             case DType.INT:
-                                leftOperand = parseFloat(<string>this._leftOperand.getValue());
-                                rightOperand = parseInt(<string>this._rightOperand.getValue());
+                                leftOperand = parseFloat(<string>leftValue);
+                                rightOperand = parseInt(<string>rightValue);
 
                                 result = leftOperand != rightOperand;
 
@@ -960,24 +973,24 @@ class Operation extends Expression {
                                 return;
                         }
                     case DType.INT:
-                        switch (this._rightOperand.getType()) {
+                        switch (rightType) {
                             case DType.CHAR:
-                                leftOperand = parseInt(<string>this._leftOperand.getValue());
-                                rightOperand = this._rightOperand.getValue().toString().replace(/'/g, '').charCodeAt(0);
+                                leftOperand = parseInt(<string>leftValue);
+                                rightOperand = rightValue.toString().replace(/'/g, '').charCodeAt(0);
 
                                 result = leftOperand != rightOperand;
 
                                 return result;
                             case DType.DOUBLE:
-                                leftOperand = parseInt(<string>this._leftOperand.getValue());
-                                rightOperand = parseFloat(<string>this._rightOperand.getValue());
+                                leftOperand = parseInt(<string>leftValue);
+                                rightOperand = parseFloat(<string>rightValue);
 
                                 result = leftOperand != rightOperand;
 
                                 return result;
                             case DType.INT:
-                                leftOperand = parseInt(<string>this._leftOperand.getValue());
-                                rightOperand = parseInt(<string>this._rightOperand.getValue());
+                                leftOperand = parseInt(<string>leftValue);
+                                rightOperand = parseInt(<string>rightValue);
 
                                 result = leftOperand != rightOperand;
 
@@ -988,10 +1001,10 @@ class Operation extends Expression {
                                 return;
                         }
                     case DType.STRING:
-                        switch (this._rightOperand.getType()) {
+                        switch (rightType) {
                             case DType.STRING:
-                                leftOperand = this._leftOperand.getValue().toString();
-                                rightOperand = this._rightOperand.getValue().toString();
+                                leftOperand = leftValue.toString();
+                                rightOperand = rightValue.toString();
 
                                 result = leftOperand != rightOperand;
 
@@ -1007,12 +1020,12 @@ class Operation extends Expression {
             case OperationType.LESS_THAN:
                 this._type = DType.BOOLEAN;
 
-                switch (this._leftOperand.getType()) {
+                switch (leftType) {
                     case DType.BOOLEAN:
-                        switch (this._rightOperand.getType()) {
+                        switch (rightType) {
                             case DType.BOOLEAN:
-                                leftOperand = this._leftOperand.getValue().toString() == 'true';
-                                rightOperand = this._rightOperand.getValue().toString() == 'true';
+                                leftOperand = leftValue.toString() == 'true';
+                                rightOperand = rightValue.toString() == 'true';
 
                                 result = leftOperand < rightOperand;
 
@@ -1023,24 +1036,24 @@ class Operation extends Expression {
                                 return;
                         }
                     case DType.CHAR:
-                        switch (this._rightOperand.getType()) {
+                        switch (rightType) {
                             case DType.CHAR:
-                                leftOperand = this._leftOperand.getValue().toString().replace(/'/g, '').charCodeAt(0);
-                                rightOperand = this._rightOperand.getValue().toString().replace(/'/g, '').charCodeAt(0);
+                                leftOperand = leftValue.toString().replace(/'/g, '').charCodeAt(0);
+                                rightOperand = rightValue.toString().replace(/'/g, '').charCodeAt(0);
 
                                 result = leftOperand < rightOperand;
 
                                 return result;
                             case DType.DOUBLE:
-                                leftOperand = this._leftOperand.getValue().toString().replace(/'/g, '').charCodeAt(0);
-                                rightOperand = this._rightOperand.getValue();
+                                leftOperand = leftValue.toString().replace(/'/g, '').charCodeAt(0);
+                                rightOperand = rightValue;
 
                                 result = parseFloat(String(leftOperand)) < parseFloat(<string>rightOperand);
 
                                 return result;
                             case DType.INT:
-                                leftOperand = this._leftOperand.getValue().toString().replace(/'/g, '').charCodeAt(0);
-                                rightOperand = this._rightOperand.getValue();
+                                leftOperand = leftValue.toString().replace(/'/g, '').charCodeAt(0);
+                                rightOperand = rightValue;
 
                                 result = parseInt(String(leftOperand)) < parseInt(<string>rightOperand);
 
@@ -1051,24 +1064,24 @@ class Operation extends Expression {
                                 return;
                         }
                     case DType.DOUBLE:
-                        switch (this._rightOperand.getType()) {
+                        switch (rightType) {
                             case DType.CHAR:
-                                leftOperand = this._leftOperand.getValue();
-                                rightOperand = this._rightOperand.getValue().toString().replace(/'/g, '').charCodeAt(0);
+                                leftOperand = leftValue;
+                                rightOperand = rightValue.toString().replace(/'/g, '').charCodeAt(0);
 
                                 result = parseFloat(<string>leftOperand) < parseFloat(String(rightOperand));
 
                                 return result;
                             case DType.DOUBLE:
-                                leftOperand = parseFloat(<string>this._leftOperand.getValue());
-                                rightOperand = parseFloat(<string>this._rightOperand.getValue());
+                                leftOperand = parseFloat(<string>leftValue);
+                                rightOperand = parseFloat(<string>rightValue);
 
                                 result = leftOperand < rightOperand;
 
                                 return result;
                             case DType.INT:
-                                leftOperand = parseFloat(<string>this._leftOperand.getValue());
-                                rightOperand = parseInt(<string>this._rightOperand.getValue());
+                                leftOperand = parseFloat(<string>leftValue);
+                                rightOperand = parseInt(<string>rightValue);
 
                                 result = leftOperand < rightOperand;
 
@@ -1079,24 +1092,24 @@ class Operation extends Expression {
                                 return;
                         }
                     case DType.INT:
-                        switch (this._rightOperand.getType()) {
+                        switch (rightType) {
                             case DType.CHAR:
-                                leftOperand = parseInt(<string>this._leftOperand.getValue());
-                                rightOperand = this._rightOperand.getValue().toString().replace(/'/g, '').charCodeAt(0);
+                                leftOperand = parseInt(<string>leftValue);
+                                rightOperand = rightValue.toString().replace(/'/g, '').charCodeAt(0);
 
                                 result = leftOperand < rightOperand;
 
                                 return result;
                             case DType.DOUBLE:
-                                leftOperand = parseInt(<string>this._leftOperand.getValue());
-                                rightOperand = parseFloat(<string>this._rightOperand.getValue());
+                                leftOperand = parseInt(<string>leftValue);
+                                rightOperand = parseFloat(<string>rightValue);
 
                                 result = leftOperand < rightOperand;
 
                                 return result;
                             case DType.INT:
-                                leftOperand = parseInt(<string>this._leftOperand.getValue());
-                                rightOperand = parseInt(<string>this._rightOperand.getValue());
+                                leftOperand = parseInt(<string>leftValue);
+                                rightOperand = parseInt(<string>rightValue);
 
                                 result = leftOperand < rightOperand;
 
@@ -1107,10 +1120,10 @@ class Operation extends Expression {
                                 return;
                         }
                     case DType.STRING:
-                        switch (this._rightOperand.getType()) {
+                        switch (rightType) {
                             case DType.STRING:
-                                leftOperand = this._leftOperand.getValue().toString();
-                                rightOperand = this._rightOperand.getValue().toString();
+                                leftOperand = leftValue.toString();
+                                rightOperand = rightValue.toString();
 
                                 result = leftOperand < rightOperand;
 
@@ -1126,12 +1139,12 @@ class Operation extends Expression {
             case OperationType.LESS_THAN_OR_EQUAL_TO:
                 this._type = DType.BOOLEAN;
 
-                switch (this._leftOperand.getType()) {
+                switch (leftType) {
                     case DType.BOOLEAN:
-                        switch (this._rightOperand.getType()) {
+                        switch (rightType) {
                             case DType.BOOLEAN:
-                                leftOperand = this._leftOperand.getValue().toString() == 'true';
-                                rightOperand = this._rightOperand.getValue().toString() == 'true';
+                                leftOperand = leftValue.toString() == 'true';
+                                rightOperand = rightValue.toString() == 'true';
 
                                 result = leftOperand <= rightOperand;
 
@@ -1142,24 +1155,24 @@ class Operation extends Expression {
                                 return;
                         }
                     case DType.CHAR:
-                        switch (this._rightOperand.getType()) {
+                        switch (rightType) {
                             case DType.CHAR:
-                                leftOperand = this._leftOperand.getValue().toString().replace(/'/g, '').charCodeAt(0);
-                                rightOperand = this._rightOperand.getValue().toString().replace(/'/g, '').charCodeAt(0);
+                                leftOperand = leftValue.toString().replace(/'/g, '').charCodeAt(0);
+                                rightOperand = rightValue.toString().replace(/'/g, '').charCodeAt(0);
 
                                 result = leftOperand <= rightOperand;
 
                                 return result;
                             case DType.DOUBLE:
-                                leftOperand = this._leftOperand.getValue().toString().replace(/'/g, '').charCodeAt(0);
-                                rightOperand = this._rightOperand.getValue();
+                                leftOperand = leftValue.toString().replace(/'/g, '').charCodeAt(0);
+                                rightOperand = rightValue;
 
                                 result = parseFloat(String(leftOperand)) <= parseFloat(<string>rightOperand);
 
                                 return result;
                             case DType.INT:
-                                leftOperand = this._leftOperand.getValue().toString().replace(/'/g, '').charCodeAt(0);
-                                rightOperand = this._rightOperand.getValue();
+                                leftOperand = leftValue.toString().replace(/'/g, '').charCodeAt(0);
+                                rightOperand = rightValue;
 
                                 result = parseInt(String(leftOperand)) <= parseInt(<string>rightOperand);
 
@@ -1170,24 +1183,24 @@ class Operation extends Expression {
                                 return;
                         }
                     case DType.DOUBLE:
-                        switch (this._rightOperand.getType()) {
+                        switch (rightType) {
                             case DType.CHAR:
-                                leftOperand = this._leftOperand.getValue();
-                                rightOperand = this._rightOperand.getValue().toString().replace(/'/g, '').charCodeAt(0);
+                                leftOperand = leftValue;
+                                rightOperand = rightValue.toString().replace(/'/g, '').charCodeAt(0);
 
                                 result = parseFloat(<string>leftOperand) <= parseFloat(String(rightOperand));
 
                                 return result;
                             case DType.DOUBLE:
-                                leftOperand = parseFloat(<string>this._leftOperand.getValue());
-                                rightOperand = parseFloat(<string>this._rightOperand.getValue());
+                                leftOperand = parseFloat(<string>leftValue);
+                                rightOperand = parseFloat(<string>rightValue);
 
                                 result = leftOperand <= rightOperand;
 
                                 return result;
                             case DType.INT:
-                                leftOperand = parseFloat(<string>this._leftOperand.getValue());
-                                rightOperand = parseInt(<string>this._rightOperand.getValue());
+                                leftOperand = parseFloat(<string>leftValue);
+                                rightOperand = parseInt(<string>rightValue);
 
                                 result = leftOperand <= rightOperand;
 
@@ -1198,24 +1211,24 @@ class Operation extends Expression {
                                 return;
                         }
                     case DType.INT:
-                        switch (this._rightOperand.getType()) {
+                        switch (rightType) {
                             case DType.CHAR:
-                                leftOperand = parseInt(<string>this._leftOperand.getValue());
-                                rightOperand = this._rightOperand.getValue().toString().replace(/'/g, '').charCodeAt(0);
+                                leftOperand = parseInt(<string>leftValue);
+                                rightOperand = rightValue.toString().replace(/'/g, '').charCodeAt(0);
 
                                 result = leftOperand <= rightOperand;
 
                                 return result;
                             case DType.DOUBLE:
-                                leftOperand = parseInt(<string>this._leftOperand.getValue());
-                                rightOperand = parseFloat(<string>this._rightOperand.getValue());
+                                leftOperand = parseInt(<string>leftValue);
+                                rightOperand = parseFloat(<string>rightValue);
 
                                 result = leftOperand <= rightOperand;
 
                                 return result;
                             case DType.INT:
-                                leftOperand = parseInt(<string>this._leftOperand.getValue());
-                                rightOperand = parseInt(<string>this._rightOperand.getValue());
+                                leftOperand = parseInt(<string>leftValue);
+                                rightOperand = parseInt(<string>rightValue);
 
                                 result = leftOperand <= rightOperand;
 
@@ -1226,10 +1239,10 @@ class Operation extends Expression {
                                 return;
                         }
                     case DType.STRING:
-                        switch (this._rightOperand.getType()) {
+                        switch (rightType) {
                             case DType.STRING:
-                                leftOperand = this._leftOperand.getValue().toString();
-                                rightOperand = this._rightOperand.getValue().toString();
+                                leftOperand = leftValue.toString();
+                                rightOperand = rightValue.toString();
 
                                 result = leftOperand <= rightOperand;
 
@@ -1243,21 +1256,21 @@ class Operation extends Expression {
                         return; // Este caso nunca se ejecutará.
                 }
             case OperationType.MODULUS:
-                this._type = this.getQuotientType(this._leftOperand.getType(), this._rightOperand.getType());
+                this._type = this.getQuotientType(leftType, rightType);
 
-                switch (this._leftOperand.getType()) {
+                switch (leftType) {
                     case DType.DOUBLE:
-                        switch (this._rightOperand.getType()) {
+                        switch (rightType) {
                             case DType.DOUBLE:
-                                leftOperand = parseFloat(<string>this._leftOperand.getValue());
-                                rightOperand = parseFloat(<string>this._rightOperand.getValue());
+                                leftOperand = parseFloat(<string>leftValue);
+                                rightOperand = parseFloat(<string>rightValue);
 
                                 result = leftOperand % rightOperand;
 
                                 return result;
                             case DType.INT:
-                                leftOperand = parseFloat(<string>this._leftOperand.getValue());
-                                rightOperand = parseFloat(<string>this._rightOperand.getValue());
+                                leftOperand = parseFloat(<string>leftValue);
+                                rightOperand = parseFloat(<string>rightValue);
 
                                 result = leftOperand % rightOperand;
 
@@ -1268,17 +1281,17 @@ class Operation extends Expression {
                                 return;
                         }
                     case DType.INT:
-                        switch (this._rightOperand.getType()) {
+                        switch (rightType) {
                             case DType.DOUBLE:
-                                leftOperand = parseFloat(<string>this._leftOperand.getValue());
-                                rightOperand = parseFloat(<string>this._rightOperand.getValue());
+                                leftOperand = parseFloat(<string>leftValue);
+                                rightOperand = parseFloat(<string>rightValue);
 
                                 result = leftOperand % rightOperand;
 
                                 return result;
                             case DType.INT:
-                                leftOperand = parseFloat(<string>this._leftOperand.getValue());
-                                rightOperand = parseFloat(<string>this._rightOperand.getValue());
+                                leftOperand = parseFloat(<string>leftValue);
+                                rightOperand = parseFloat(<string>rightValue);
 
                                 result = leftOperand % rightOperand;
 
@@ -1294,21 +1307,21 @@ class Operation extends Expression {
                         return;
                 }
             case OperationType.MULTIPLICATION:
-                this._type = this.getProductType(this._leftOperand.getType(), this._rightOperand.getType());
+                this._type = this.getProductType(leftType, rightType);
 
-                switch (this._leftOperand.getType()) {
+                switch (leftType) {
                     case DType.CHAR:
-                        switch (this._rightOperand.getType()) {
+                        switch (rightType) {
                             case DType.DOUBLE:
-                                leftOperand = this._leftOperand.getValue().toString().replace(/'/g, '').charCodeAt(0);
-                                rightOperand = this._rightOperand.getValue();
+                                leftOperand = leftValue.toString().replace(/'/g, '').charCodeAt(0);
+                                rightOperand = rightValue;
 
                                 result = parseFloat(String(leftOperand)) * parseFloat(String(rightOperand));
 
                                 return result;
                             case DType.INT:
-                                leftOperand = this._leftOperand.getValue().toString().replace(/'/g, '').charCodeAt(0);
-                                rightOperand = parseInt(<string>this._rightOperand.getValue());
+                                leftOperand = leftValue.toString().replace(/'/g, '').charCodeAt(0);
+                                rightOperand = parseInt(<string>rightValue);
 
                                 result = leftOperand * rightOperand;
 
@@ -1319,24 +1332,24 @@ class Operation extends Expression {
                                 return;
                         }
                     case DType.DOUBLE:
-                        switch (this._rightOperand.getType()) {
+                        switch (rightType) {
                             case DType.CHAR:
-                                leftOperand = this._leftOperand.getValue();
-                                rightOperand = this._rightOperand.getValue().toString().replace(/'/g, '').charCodeAt(0);
+                                leftOperand = leftValue;
+                                rightOperand = rightValue.toString().replace(/'/g, '').charCodeAt(0);
 
                                 result = parseFloat(String(leftOperand)) * parseFloat(String(rightOperand));
 
                                 return result;
                             case DType.DOUBLE:
-                                leftOperand = parseFloat(<string>this._leftOperand.getValue());
-                                rightOperand = parseFloat(<string>this._rightOperand.getValue());
+                                leftOperand = parseFloat(<string>leftValue);
+                                rightOperand = parseFloat(<string>rightValue);
 
                                 result = leftOperand * rightOperand;
 
                                 return result;
                             case DType.INT:
-                                leftOperand = parseFloat(<string>this._leftOperand.getValue());
-                                rightOperand = parseFloat(<string>this._rightOperand.getValue());
+                                leftOperand = parseFloat(<string>leftValue);
+                                rightOperand = parseFloat(<string>rightValue);
 
                                 result = leftOperand * rightOperand;
 
@@ -1347,24 +1360,24 @@ class Operation extends Expression {
                                 return;
                         }
                     case DType.INT:
-                        switch (this._rightOperand.getType()) {
+                        switch (rightType) {
                             case DType.CHAR:
-                                leftOperand = parseInt(<string>this._leftOperand.getValue());
-                                rightOperand = this._rightOperand.getValue().toString().replace(/'/g, '').charCodeAt(0);
+                                leftOperand = parseInt(<string>leftValue);
+                                rightOperand = rightValue.toString().replace(/'/g, '').charCodeAt(0);
 
                                 result = leftOperand * rightOperand;
 
                                 return result;
                             case DType.DOUBLE:
-                                leftOperand = parseFloat(<string>this._leftOperand.getValue());
-                                rightOperand = parseFloat(<string>this._rightOperand.getValue());
+                                leftOperand = parseFloat(<string>leftValue);
+                                rightOperand = parseFloat(<string>rightValue);
 
                                 result = leftOperand * rightOperand;
 
                                 return result;
                             case DType.INT:
-                                leftOperand = parseInt(<string>this._leftOperand.getValue());
-                                rightOperand = parseInt(<string>this._rightOperand.getValue());
+                                leftOperand = parseInt(<string>leftValue);
+                                rightOperand = parseInt(<string>rightValue);
 
                                 result = leftOperand * rightOperand;
 
@@ -1380,11 +1393,11 @@ class Operation extends Expression {
                         return;
                 }
             case OperationType.NEGATION:
-                switch (this._leftOperand.getType()) {
+                switch (leftType) {
                     case DType.DOUBLE:
                         this._type = DType.DOUBLE;
 
-                        leftOperand = parseFloat(<string>this._leftOperand.getValue());
+                        leftOperand = parseFloat(<string>leftValue);
 
                         result = -leftOperand;
 
@@ -1392,7 +1405,7 @@ class Operation extends Expression {
                     case DType.INT:
                         this._type = DType.INT;
 
-                        leftOperand = parseInt(<string>this._leftOperand.getValue());
+                        leftOperand = parseInt(<string>leftValue);
 
                         result = -leftOperand;
 
@@ -1405,27 +1418,27 @@ class Operation extends Expression {
             case OperationType.NOT:
                 this._type = DType.BOOLEAN;
 
-                switch (this._leftOperand.getType()) {
+                switch (leftType) {
                     case DType.BOOLEAN:
-                        leftOperand = this._leftOperand.getValue().toString() == 'true';
+                        leftOperand = leftValue.toString() == 'true';
 
                         break;
                     case DType.CHAR:
-                        leftOperand = this._leftOperand.getValue().toString().replace(/'/g, '').charCodeAt(0);
+                        leftOperand = leftValue.toString().replace(/'/g, '').charCodeAt(0);
 
                         leftOperand = parseInt(String(leftOperand));
 
                         break;
                     case DType.DOUBLE:
-                        leftOperand = parseFloat(<string>this._leftOperand.getValue());
+                        leftOperand = parseFloat(<string>leftValue);
 
                         break;
                     case DType.INT:
-                        leftOperand = parseInt(<string>this._leftOperand.getValue());
+                        leftOperand = parseInt(<string>leftValue);
 
                         break;
                     case DType.STRING:
-                        leftOperand = this._leftOperand.getValue().toString();
+                        leftOperand = leftValue.toString();
 
                         break;
                     default:
@@ -1438,54 +1451,54 @@ class Operation extends Expression {
             case OperationType.OR:
                 this._type = DType.BOOLEAN;
 
-                switch (this._leftOperand.getType()) {
+                switch (leftType) {
                     case DType.BOOLEAN:
-                        leftOperand = this._leftOperand.getValue().toString() == 'true';
+                        leftOperand = leftValue.toString() == 'true';
 
                         break;
                     case DType.CHAR:
-                        leftOperand = this._leftOperand.getValue().toString().replace(/'/g, '').charCodeAt(0);
+                        leftOperand = leftValue.toString().replace(/'/g, '').charCodeAt(0);
 
                         leftOperand = parseInt(String(leftOperand));
 
                         break;
                     case DType.DOUBLE:
-                        leftOperand = parseFloat(<string>this._leftOperand.getValue());
+                        leftOperand = parseFloat(<string>leftValue);
 
                         break;
                     case DType.INT:
-                        leftOperand = parseInt(<string>this._leftOperand.getValue());
+                        leftOperand = parseInt(<string>leftValue);
 
                         break;
                     case DType.STRING:
-                        leftOperand = this._leftOperand.getValue().toString();
+                        leftOperand = leftValue.toString();
 
                         break;
                     default:
                         return; // Este caso nunca se ejecutará.
                 }
 
-                switch (this._rightOperand.getType()) {
+                switch (rightType) {
                     case DType.BOOLEAN:
-                        rightOperand = this._rightOperand.getValue().toString() == 'true';
+                        rightOperand = rightValue.toString() == 'true';
 
                         break;
                     case DType.CHAR:
-                        rightOperand = this._rightOperand.getValue().toString().replace(/'/g, '').charCodeAt(0);
+                        rightOperand = rightValue.toString().replace(/'/g, '').charCodeAt(0);
 
                         rightOperand = parseInt(String(rightOperand));
 
                         break;
                     case DType.DOUBLE:
-                        rightOperand = parseFloat(<string>this._rightOperand.getValue());
+                        rightOperand = parseFloat(<string>rightValue);
 
                         break;
                     case DType.INT:
-                        rightOperand = parseInt(<string>this._rightOperand.getValue());
+                        rightOperand = parseInt(<string>rightValue);
 
                         break;
                     case DType.STRING:
-                        rightOperand = this._rightOperand.getValue().toString();
+                        rightOperand = rightValue.toString();
 
                         break;
                     default:
@@ -1496,27 +1509,27 @@ class Operation extends Expression {
 
                 return result;
             case OperationType.SUBTRACTION:
-                this._type = this.getDifferenceType(this._leftOperand.getType(), this._rightOperand.getType());
+                this._type = this.getDifferenceType(leftType, rightType);
 
-                switch (this._leftOperand.getType()) {
+                switch (leftType) {
                     case DType.BOOLEAN:
-                        switch (this._rightOperand.getType()) {
+                        switch (rightType) {
                             case DType.DOUBLE:
-                                const floatTrueValue = parseFloat(String(1));
-                                const floatFalseValue = parseFloat(String(0));
+                                const floatTrueValue: number = parseFloat(String(1));
+                                const floatFalseValue: number = parseFloat(String(0));
 
-                                leftOperand = this._leftOperand.getValue() == 'true' ? floatTrueValue : floatFalseValue;
-                                rightOperand = parseFloat(<string>this._rightOperand.getValue());
+                                leftOperand = leftValue == 'true' ? floatTrueValue : floatFalseValue;
+                                rightOperand = parseFloat(<string>rightValue);
 
                                 result = leftOperand - rightOperand;
 
                                 return result;
                             case DType.INT:
-                                const intTrueValue = parseInt(String(1));
-                                const intFalseValue = parseInt(String(0));
+                                const intTrueValue: number = parseInt(String(1));
+                                const intFalseValue: number = parseInt(String(0));
 
-                                leftOperand = this._leftOperand.getValue() == 'true' ? intTrueValue : intFalseValue;
-                                rightOperand = parseInt(<string>this._rightOperand.getValue());
+                                leftOperand = leftValue == 'true' ? intTrueValue : intFalseValue;
+                                rightOperand = parseInt(<string>rightValue);
 
                                 result = leftOperand - rightOperand;
 
@@ -1527,17 +1540,17 @@ class Operation extends Expression {
                                 return;
                         }
                     case DType.CHAR:
-                        switch (this._rightOperand.getType()) {
+                        switch (rightType) {
                             case DType.DOUBLE:
-                                leftOperand = this._leftOperand.getValue().toString().replace(/'/g, '').charCodeAt(0);
-                                rightOperand = parseFloat(<string>this._rightOperand.getValue());
+                                leftOperand = leftValue.toString().replace(/'/g, '').charCodeAt(0);
+                                rightOperand = parseFloat(<string>rightValue);
 
                                 result = leftOperand - rightOperand;
 
                                 return result;
                             case DType.INT:
-                                leftOperand = this._leftOperand.getValue().toString().replace(/'/g, '').charCodeAt(0);
-                                rightOperand = parseInt(<string>this._rightOperand.getValue());
+                                leftOperand = leftValue.toString().replace(/'/g, '').charCodeAt(0);
+                                rightOperand = parseInt(<string>rightValue);
 
                                 result = leftOperand - rightOperand;
 
@@ -1548,34 +1561,34 @@ class Operation extends Expression {
                                 return;
                         }
                     case DType.DOUBLE:
-                        switch (this._rightOperand.getType()) {
+                        switch (rightType) {
                             case DType.BOOLEAN:
-                                const trueValue = parseFloat(String(1));
-                                const falseValue = parseFloat(String(0));
+                                const trueValue: number = parseFloat(String(1));
+                                const falseValue: number = parseFloat(String(0));
 
-                                leftOperand = parseFloat(<string>this._leftOperand.getValue());
-                                rightOperand = this._rightOperand.getValue() == 'true' ? trueValue : falseValue;
+                                leftOperand = parseFloat(<string>leftValue);
+                                rightOperand = rightValue == 'true' ? trueValue : falseValue;
 
                                 result = leftOperand - rightOperand;
 
                                 return result;
                             case DType.CHAR:
-                                leftOperand = this._leftOperand.getValue();
-                                rightOperand = this._rightOperand.getValue().toString().replace(/'/g, '').charCodeAt(0);
+                                leftOperand = leftValue;
+                                rightOperand = rightValue.toString().replace(/'/g, '').charCodeAt(0);
 
                                 result = parseFloat(String(leftOperand)) - parseFloat(String(rightOperand));
 
                                 return result;
                             case DType.DOUBLE:
-                                leftOperand = parseFloat(<string>this._leftOperand.getValue());
-                                rightOperand = parseFloat(<string>this._rightOperand.getValue());
+                                leftOperand = parseFloat(<string>leftValue);
+                                rightOperand = parseFloat(<string>rightValue);
 
                                 result = leftOperand - rightOperand;
 
                                 return result;
                             case DType.INT:
-                                leftOperand = parseFloat(<string>this._leftOperand.getValue());
-                                rightOperand = parseFloat(<string>this._rightOperand.getValue());
+                                leftOperand = parseFloat(<string>leftValue);
+                                rightOperand = parseFloat(<string>rightValue);
 
                                 result = leftOperand - rightOperand;
 
@@ -1586,31 +1599,31 @@ class Operation extends Expression {
                                 return;
                         }
                     case DType.INT:
-                        switch (this._rightOperand.getType()) {
+                        switch (rightType) {
                             case DType.BOOLEAN:
-                                leftOperand = parseInt(<string>this._leftOperand.getValue());
-                                rightOperand = this._rightOperand.getValue() == 'true' ? 1 : 0;
+                                leftOperand = parseInt(<string>leftValue);
+                                rightOperand = rightValue == 'true' ? 1 : 0;
 
                                 result = leftOperand - rightOperand;
 
                                 return result;
                             case DType.CHAR:
-                                leftOperand = parseInt(<string>this._leftOperand.getValue());
-                                rightOperand = this._rightOperand.getValue().toString().replace(/'/g, '').charCodeAt(0);
+                                leftOperand = parseInt(<string>leftValue);
+                                rightOperand = rightValue.toString().replace(/'/g, '').charCodeAt(0);
 
                                 result = leftOperand - rightOperand;
 
                                 return result;
                             case DType.DOUBLE:
-                                leftOperand = parseFloat(<string>this._leftOperand.getValue());
-                                rightOperand = parseFloat(<string>this._rightOperand.getValue());
+                                leftOperand = parseFloat(<string>leftValue);
+                                rightOperand = parseFloat(<string>rightValue);
 
                                 result = leftOperand - rightOperand;
 
                                 return result;
                             case DType.INT:
-                                leftOperand = parseInt(<string>this._leftOperand.getValue());
-                                rightOperand = parseInt(<string>this._rightOperand.getValue());
+                                leftOperand = parseInt(<string>leftValue);
+                                rightOperand = parseInt(<string>rightValue);
 
                                 result = leftOperand - rightOperand;
 

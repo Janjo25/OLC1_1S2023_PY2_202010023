@@ -1,3 +1,4 @@
+import {Environment} from "../../environment";
 import {Expression} from "../expression";
 
 class Variable extends Expression {
@@ -11,11 +12,11 @@ class Variable extends Expression {
         this.value = value;
     };
 
-    getType(): number {
+    getType(environment: Environment): number {
         return this.type;
     };
 
-    getValue(): number | string {
+    getValue(environment: Environment): number | string {
         return this.value;
     };
 }

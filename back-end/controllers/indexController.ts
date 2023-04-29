@@ -1,5 +1,6 @@
 import {Request, Response} from "express";
 
+import {Environment} from "../interpreter/environment";
 import {Statement} from "../interpreter/statements/statement";
 import {interpreterErrorsList} from "../interpreter/tables/errors/interpreterErrorsList";
 import {output} from "../interpreter/output/output";
@@ -11,9 +12,9 @@ export class IndexController {
         interpreterErrorsList.reset();
         output.reset();
 
-        const code = req.body.code;
+        const code: any = req.body.code;
 
-        let parsedCode;
+        let parsedCode: Statement[];
 
         try {
             parsedCode = parser.parse(code);
@@ -29,10 +30,10 @@ export class IndexController {
             return;
         }
 
+        let globalEnvironment: Environment = new Environment('Global', null, null);
+
         for (let i = 0; i < parsedCode.length; i++) {
-            if (parsedCode[i] instanceof Statement) {
-                parsedCode[i].execute();
-            }
+            parsedCode[i].execute(globalEnvironment);
         }
 
         console.log(output.stringBuilder.toString());
