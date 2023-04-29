@@ -73,5 +73,5 @@ switch (25) {
                 print("75 -> default (250)");
         }
     default:
-        print(25);
+        print("default (25)");
 }
