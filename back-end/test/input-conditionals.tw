@@ -1,0 +1,77 @@
+// SentenciasCondicionales-if
+if (25 == 25) {
+    print("if");
+
+    if (75 == 75) {
+        print("if -> (if anidado)");
+    } else if (100 == 100) {
+        print("if -> (elif anidado)");
+    } else {
+        print("if -> (else anidado)");
+    }
+} else if (50 == 50) {
+    print("elif");
+
+    if (125 == 125) {
+        print("elif -> (if anidado)");
+    } else if (150 == 150) {
+        print("elif -> (elif anidado)");
+    } else {
+        print("elif -> (else anidado)");
+    }
+} else {
+    print("else");
+
+    if (175 == 175) {
+        print("else -> (if anidado)");
+    } else if (200 == 200) {
+        print("else -> (elif anidado)");
+    } else {
+        print("else -> (else anidado)");
+    }
+}
+
+// SentenciasCondicionales-switch
+switch (25) {
+    case 25:
+        print(25);
+
+        switch (100) {
+            case 100:
+                print(100);
+            case 125:
+                print(125);
+            case 150:
+                print(150);
+            default:
+                print("25 -> default (100)");
+        }
+    case 50:
+        print(50);
+
+        switch (175) {
+            case 175:
+                print(175);
+            case 200:
+                print(200);
+            case 225:
+                print(225);
+            default:
+                print("50 -> default (175)");
+        }
+    case 75:
+        print(75);
+
+        switch (250) {
+            case 250:
+                print(250);
+            case 275:
+                print(275);
+            case 300:
+                print(300);
+            default:
+                print("75 -> default (250)");
+        }
+    default:
+        print(25);
+}
