@@ -8,7 +8,7 @@ import {Variable} from "../declaration-assignment/variable";
 class Operation extends Expression {
     private _leftOperand: Variable;
     private _rightOperand: Variable;
-    private _type: null | number;
+    private _type: null | number | undefined;
 
     private readonly _operationType: number;
 
@@ -20,7 +20,7 @@ class Operation extends Expression {
         this._leftOperand = leftOperand;
         this._rightOperand = rightOperand;
 
-        this._type = null; // Esto se retornará para saber el tipo de dato al que pertence el resultado de la operación.
+        this._type = undefined; // Se retornará para saber el tipo de dato al que pertence el resultado de la operación.
     };
 
     getDifferenceType(leftOperand: number, rightOperand: number): DType.DOUBLE | DType.INT | null {
@@ -77,7 +77,7 @@ class Operation extends Expression {
         return null;
     };
 
-    getType(environment: Environment): null | number {
+    getType(environment: Environment): null | number | undefined {
         return this._type;
     };
 
