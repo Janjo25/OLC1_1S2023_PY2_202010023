@@ -52,6 +52,8 @@ class Switch extends Statement {
                         statement.execute(localEnvironment);
                     }
                 }
+
+                return;
             }
 
             if (i == this._conditionsArray.length - 1) {
