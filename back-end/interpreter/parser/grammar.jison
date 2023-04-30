@@ -6,6 +6,7 @@ const {Operation} = require("../expressions/operation/operation");
 const {Print} = require("../statements/output/print");
 const {Switch} = require("../statements/control-flow/conditionals/switch");
 const {Variable} = require("../expressions/declaration-assignment/variable");
+const {interpreterErrorsList} = require("../tables/errors/interpreterErrorsList");
 %}
 
 %lex
@@ -112,7 +113,7 @@ const {Variable} = require("../expressions/declaration-assignment/variable");
 \s                              /* ignorar espacios en blanco */
 
 /* errores */
-.                               return 'INVALID';
+.                               { interpreterErrorsList.pushError('Léxico', yytext, yylloc.first_line, yylloc.first_column); }
 
 /* fin de línea */
 <<EOF>>                         return 'EOF';
