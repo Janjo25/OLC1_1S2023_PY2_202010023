@@ -15,8 +15,8 @@ class InterpreterErrorsList {
         return this._errorsArray.length;
     };
 
-    pushError(type: string, description: string, line: number, column: number): void {
-        this._errorsArray.push(new InterpreterError(type, description, line, column));
+    pushError(type: string, token: string, line: number, column: number): void {
+        this._errorsArray.push(new InterpreterError(type, token, line, column));
     };
 
     reset(): void {
