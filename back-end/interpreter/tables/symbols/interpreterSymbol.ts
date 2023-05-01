@@ -3,9 +3,9 @@ class InterpreterSymbol {
     private readonly _line: number;
     private readonly _name: string;
     private readonly _type: number;
-    private readonly _value: null | number;
+    private readonly _value: boolean | number | string;
 
-    constructor(type: number, name: string, value: null | number, line: number, column: number) {
+    constructor(type: number, name: string, value: boolean | number | string, line: number, column: number) {
         this._type = type;
 
         this._name = name;
@@ -32,7 +32,7 @@ class InterpreterSymbol {
         return this._type;
     };
 
-    get value(): null | number {
+    get value(): boolean | number | string {
         return this._value;
     };
 }
