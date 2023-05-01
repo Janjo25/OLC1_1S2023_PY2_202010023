@@ -1,0 +1,17 @@
+boolean baz;
+char fred;
+double waldo;
+int foo;
+string bar;
+
+bar = "foo";
+baz = false;
+foo = 50;
+fred = 'Z';
+waldo = 50.25;
+
+print(bar);
+print(baz);
+print(foo);
+print(fred);
+print(waldo);
