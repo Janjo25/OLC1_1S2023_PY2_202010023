@@ -1,0 +1,11 @@
+boolean baz;
+char fred;
+double waldo;
+int foo;
+string bar;
+
+print(bar);
+print(baz);
+print(foo);
+print(fred);
+print(waldo);
