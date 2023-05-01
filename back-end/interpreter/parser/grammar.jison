@@ -179,6 +179,7 @@ expression
     | arithmetic                                                                                                        { $$ = $1; }
     | logical                                                                                                           { $$ = $1; }
     | relational                                                                                                        { $$ = $1; }
+    | unary                                                                                                             { $$ = $1; }
     | value                                                                                                             { $$ = $1; }
     ;
 
@@ -205,6 +206,11 @@ relational
     | expression INEQUALITY expression                                                                                  { $$ = new Operation(OperationType.INEQUALITY, $1, $3); }
     | expression LESS_THAN expression                                                                                   { $$ = new Operation(OperationType.LESS_THAN, $1, $3); }
     | expression LESS_THAN_OR_EQUAL_TO expression                                                                       { $$ = new Operation(OperationType.LESS_THAN_OR_EQUAL_TO, $1, $3); }
+    ;
+
+unary
+    : expression DECREMENT                                                                                              { $$ = new Operation(OperationType.DECREMENT, $1, null); }
+    | expression INCREMENT                                                                                              { $$ = new Operation(OperationType.INCREMENT, $1, null); }
     ;
 
 value
