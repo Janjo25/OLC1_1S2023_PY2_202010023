@@ -29,23 +29,31 @@ class Switch extends Statement {
 
         const expression: Expression = this._expression;
 
+        let expressionType!: number;
+
         let result!: number | string;
 
         if (expression instanceof Variable) {
             result = expression.getValue(environment);
+
+            expressionType = expression.getType(localEnvironment);
         }
 
-        let caseValue;
+        let caseLabel!: number | string;
 
         for (let i = 0; i < this._conditionsArray.length; i++) {
             const condition: Expression = this._conditionsArray[i];
 
+            let conditionType!: number;
+
             if (condition instanceof Variable) {
-                caseValue = condition.getValue(localEnvironment);
+                caseLabel = condition.getValue(localEnvironment);
+
+                conditionType = condition.getType(localEnvironment);
             }
 
-            if (result == caseValue) {
-                if (this._expression.getType(localEnvironment) === condition.getType(localEnvironment)) {
+            if (result == caseLabel) {
+                if (expressionType === conditionType) {
                     for (let j = 0; j < this._caseStatementsArrays[i].length; j++) {
                         const statement: Statement = this._caseStatementsArrays[i][j];
 
