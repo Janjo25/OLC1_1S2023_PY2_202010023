@@ -253,9 +253,9 @@ declaration
     ;
 
 data_type
-    : BOOLEAN_KEYWORD                                                                                   { $$ = DeclarationType.CHAR; }
-    | CHAR_KEYWORD                                                                                      { $$ = DeclarationType.DOUBLE; }
-    | DOUBLE_KEYWORD                                                                                    { $$ = DeclarationType.BOOLEAN; }
+    : BOOLEAN_KEYWORD                                                                                   { $$ = DeclarationType.BOOLEAN; }
+    | CHAR_KEYWORD                                                                                      { $$ = DeclarationType.CHAR; }
+    | DOUBLE_KEYWORD                                                                                    { $$ = DeclarationType.DOUBLE; }
     | INT_KEYWORD                                                                                       { $$ = DeclarationType.INT; }
     | STRING_KEYWORD                                                                                    { $$ = DeclarationType.STRING; }
     ;
