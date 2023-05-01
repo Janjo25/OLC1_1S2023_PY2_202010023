@@ -12,7 +12,7 @@ export class IndexController {
         interpreterErrorsList.reset();
         output.reset();
 
-        const code: any = req.body.code;
+        const code: string = req.body.code;
 
         let parsedCode: Statement[];
 
@@ -20,7 +20,7 @@ export class IndexController {
             parsedCode = parser.parse(code);
         } catch (e) {
             for (let i = 0; i < interpreterErrorsList.getLength(); i++) {
-                output.append(("-> " + interpreterErrorsList.getError(i).getMessage() + '\n'));
+                output.append("-> " + interpreterErrorsList.getError(i).getMessage() + '\n');
             }
 
             console.log(output.stringBuilder.toString());
@@ -30,7 +30,7 @@ export class IndexController {
             return;
         }
 
-        let globalEnvironment: Environment = new Environment('Global', null, null);
+        const globalEnvironment: Environment = new Environment('Global', null, null);
 
         for (let i = 0; i < parsedCode.length; i++) {
             parsedCode[i].execute(globalEnvironment);
