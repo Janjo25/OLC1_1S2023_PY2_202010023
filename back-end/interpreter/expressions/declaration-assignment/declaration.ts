@@ -4,6 +4,7 @@ import {Expression} from "../expression";
 import {InterpreterSymbol} from "../../tables/symbols/interpreterSymbol";
 import {Operation} from "../operation/operation";
 import {Statement} from "../../statements/statement";
+import {Variable} from "./variable";
 
 class Declaration extends Statement {
     private _value: Expression | undefined;
@@ -33,6 +34,8 @@ class Declaration extends Statement {
             let value!: boolean | number | string | undefined;
 
             if (expression instanceof Operation) {
+                value = expression.getValue(environment);
+            } else if (expression instanceof Variable) {
                 value = expression.getValue(environment);
             }
 
