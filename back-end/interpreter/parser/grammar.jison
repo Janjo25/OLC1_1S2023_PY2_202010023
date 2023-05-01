@@ -1,5 +1,8 @@
 %{
+const {Assignment} = require("../expressions/declaration-assignment/assignment");
 const {DeclarationType} = require("../expressions/declaration-assignment/declarationType");
+const {Declaration} = require("../expressions/declaration-assignment/declaration");
+const {Identifier} = require("../expressions/identifier/identifier");
 const {IfElse} = require("../statements/control-flow/conditionals/ifElse");
 const {OperationType} = require("../expressions/operation/operationType");
 const {Operation} = require("../expressions/operation/operation");
@@ -149,8 +152,14 @@ statements
     ;
 
 statement
-    : built_in                                                                                          { $$ = $1; }
+    : assignment                                                                                        { $$ = $1; }
+    | built_in                                                                                          { $$ = $1; }
     | conditional                                                                                       { $$ = $1; }
+    | declaration                                                                                       { $$ = $1; }
+    ;
+
+assignment
+    : IDENTIFIER EQUAL_SIGN expression SEMICOLON                                                        { $$ = new Assignment($1, $3, @1.first_line, @1.first_column); }
     ;
 
 built_in
@@ -161,43 +170,9 @@ print
     : PRINT LEFT_PARENTHESIS expression RIGHT_PARENTHESIS SEMICOLON                                     { $$ = new Print($3); }
     ;
 
-conditional
-    : if                                                                                                { $$ = $1; }
-    | switch                                                                                            { $$ = $1; }
-    | ternary                                                                                           { $$ = $1; }
-    ;
-
-if
-    : else_if                                                                                           { $$ = $1; }
-    | else_if ELSE code_block                                                                           { $1.else($3); }
-    ;
-
-else_if
-    : IF LEFT_PARENTHESIS expression RIGHT_PARENTHESIS code_block                                       { $$ = new IfElse([$3], [$5]); }
-    | else_if ELSE IF LEFT_PARENTHESIS expression RIGHT_PARENTHESIS code_block                          { $1.elseIf($5, $7); }
-    ;
-
-code_block
-    : LEFT_BRACE statements RIGHT_BRACE                                                                 { $$ = $2; }
-    ;
-
-switch
-    : SWITCH LEFT_PARENTHESIS expression RIGHT_PARENTHESIS LEFT_BRACE cases RIGHT_BRACE                 { $$ = new Switch($3); $$.setCases($6[0].condition, $6[1].statement); }
-    | SWITCH LEFT_PARENTHESIS expression RIGHT_PARENTHESIS LEFT_BRACE cases default RIGHT_BRACE         { $$ = new Switch($3); $$.setCases($6[0].condition, $6[1].statement); $$.setDefault($7); }
-    | SWITCH LEFT_PARENTHESIS expression RIGHT_PARENTHESIS LEFT_BRACE default RIGHT_BRACE               { $$ = new Switch($3); $$.setDefault($7); }
-    ;
-
-cases
-    : CASE expression COLON statements                                                                  { $$ = [{condition: [$2]}, {statement: [$4]}]; }
-    | cases CASE expression COLON statements                                                            { $1[0].condition.push($3); $1[1].statement.push($5); $$ = $1; }
-    ;
-
-default
-    : DEFAULT COLON statements                                                                          { $$ = $3; }
-    ;
-
 expression
-    : arithmetic                                                                                        { $$ = $1; }
+    : IDENTIFIER                                                                                        { $$ = new Identifier($1); }
+    | arithmetic                                                                                        { $$ = $1; }
     | logical                                                                                           { $$ = $1; }
     | relational                                                                                        { $$ = $1; }
     | value                                                                                             { $$ = $1; }
@@ -235,4 +210,52 @@ value
     | INT_VALUE                                                                                         { $$ = new Variable(DeclarationType.INT, $1); }
     | STRING_VALUE                                                                                      { $$ = new Variable(DeclarationType.STRING, $1); }
     | TRUE                                                                                              { $$ = new Variable(DeclarationType.BOOLEAN, $1); }
+    ;
+
+conditional
+    : if                                                                                                { $$ = $1; }
+    | switch                                                                                            { $$ = $1; }
+    | ternary                                                                                           { $$ = $1; }
+    ;
+
+if
+    : else_if                                                                                           { $$ = $1; }
+    | else_if ELSE code_block                                                                           { $1.else($3); }
+    ;
+
+else_if
+    : IF LEFT_PARENTHESIS expression RIGHT_PARENTHESIS code_block                                       { $$ = new IfElse([$3], [$5]); }
+    | else_if ELSE IF LEFT_PARENTHESIS expression RIGHT_PARENTHESIS code_block                          { $1.elseIf($5, $7); }
+    ;
+
+code_block
+    : LEFT_BRACE statements RIGHT_BRACE                                                                 { $$ = $2; }
+    ;
+
+switch
+    : SWITCH LEFT_PARENTHESIS expression RIGHT_PARENTHESIS LEFT_BRACE cases RIGHT_BRACE                 { $$ = new Switch($3); $$.setCases($6[0].condition, $6[1].statement); }
+    | SWITCH LEFT_PARENTHESIS expression RIGHT_PARENTHESIS LEFT_BRACE cases default RIGHT_BRACE         { $$ = new Switch($3); $$.setCases($6[0].condition, $6[1].statement); $$.setDefault($7); }
+    | SWITCH LEFT_PARENTHESIS expression RIGHT_PARENTHESIS LEFT_BRACE default RIGHT_BRACE               { $$ = new Switch($3); $$.setDefault($7); }
+    ;
+
+cases
+    : CASE expression COLON statements                                                                  { $$ = [{condition: [$2]}, {statement: [$4]}]; }
+    | cases CASE expression COLON statements                                                            { $1[0].condition.push($3); $1[1].statement.push($5); $$ = $1; }
+    ;
+
+default
+    : DEFAULT COLON statements                                                                          { $$ = $3; }
+    ;
+
+declaration
+    : data_type IDENTIFIER EQUAL_SIGN expression SEMICOLON                                              { $$ = new Declaration($1, $2, @1.first_line, @1.first_column); $$.setValue($4); }
+    | data_type IDENTIFIER SEMICOLON                                                                    { $$ = new Declaration($1, $2, @1.first_line, @1.first_column); }
+    ;
+
+data_type
+    : BOOLEAN_KEYWORD                                                                                   { $$ = DeclarationType.CHAR; }
+    | CHAR_KEYWORD                                                                                      { $$ = DeclarationType.DOUBLE; }
+    | DOUBLE_KEYWORD                                                                                    { $$ = DeclarationType.BOOLEAN; }
+    | INT_KEYWORD                                                                                       { $$ = DeclarationType.INT; }
+    | STRING_KEYWORD                                                                                    { $$ = DeclarationType.STRING; }
     ;
