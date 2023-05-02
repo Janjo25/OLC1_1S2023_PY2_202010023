@@ -46,10 +46,10 @@ const {interpreterErrorsList} = require("../tables/errors/interpreterErrorsList"
 /* operadores aritméticos */
 "%"                             return 'MODULUS';
 "*"                             return 'MULTIPLICATION';
-"+"                             return 'ADDITION';
 "++"                            return 'INCREMENT';
-"-"                             return 'SUBTRACTION';
+"+"                             return 'ADDITION';
 "--"                            return 'DECREMENT';
+"-"                             return 'SUBTRACTION';
 "/"                             return 'DIVISION';
 "^"                             return 'EXPONENTIATION';
 
