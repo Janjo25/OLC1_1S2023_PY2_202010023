@@ -160,6 +160,7 @@ statement
     | conditional                                                                                                       { $$ = $1; }
     | declaration                                                                                                       { $$ = $1; }
     | iterative                                                                                                         { $$ = $1; }
+    | unary SEMICOLON                                                                                                   { $$ = $1; }
     ;
 
 assignment
