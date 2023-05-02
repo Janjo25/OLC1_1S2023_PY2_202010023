@@ -1,26 +1,36 @@
 import {DeclarationType as DType} from "../declaration-assignment/declarationType";
 import {Environment} from "../../environment";
 import {Expression} from "../expression";
+import {Identifier} from "../identifier/identifier";
+import {InterpreterSymbol} from "../../tables/symbols/interpreterSymbol";
 import {OperationType} from "./operationType";
 import {Variable} from "../declaration-assignment/variable";
 
-// noinspection DuplicatedCode,SpellCheckingInspection
+type Operand = Identifier | Variable;
+
+// noinspection DuplicatedCode,SpellCheckingInspection,SuspiciousTypeOfGuard
 class Operation extends Expression {
-    private _leftOperand: Variable;
-    private _rightOperand: Variable;
+    leftOperand: Operand;
+
     private _type: null | number | undefined;
 
+    private readonly _column: number | undefined;
+    private readonly _line: number | undefined;
     private readonly _operationType: number;
+    private readonly _rightOperand: Operand;
 
-    constructor(operationType: number, leftOperand: Variable, rightOperand: Variable) {
+    constructor(operationType: number, leftOperand: Operand, rightOperand: Operand, line?: number, column?: number) {
         super();
 
         this._operationType = operationType;
 
-        this._leftOperand = leftOperand;
+        this.leftOperand = leftOperand;
         this._rightOperand = rightOperand;
 
-        this._type = undefined; // Se retornará para saber el tipo de dato al que pertence el resultado de la operación.
+        this._line = line;
+        this._column = column;
+
+        this._type = undefined; // Se retornará para saber el DType de dato al que pertence el resultado de la operación.
     };
 
     getDifferenceType(leftOperand: number, rightOperand: number): DType.DOUBLE | DType.INT | null {
@@ -93,11 +103,15 @@ class Operation extends Expression {
 
         let result: boolean | number | string;
 
-        leftValue = this._leftOperand.getValue(environment);
-        leftType = this._leftOperand.getType(environment);
+        if (this.leftOperand instanceof Expression) {
+            leftValue = this.leftOperand.getValue(environment)!;
+            leftType = this.leftOperand.getType(environment)!;
+        }
 
-        rightValue = this._rightOperand.getValue(environment);
-        rightType = this._rightOperand.getType(environment);
+        if (this._rightOperand instanceof Expression) {
+            rightValue = this._rightOperand.getValue(environment)!;
+            rightType = this._rightOperand.getType(environment)!;
+        }
 
         switch (this._operationType) {
             case OperationType.ADDITION:
@@ -356,6 +370,26 @@ class Operation extends Expression {
                 result = leftOperand && rightOperand;
 
                 return result;
+            case OperationType.DECREMENT:
+                if (this.leftOperand instanceof Identifier) {
+                    leftOperand = parseFloat(<string>leftValue) - parseFloat(String(1));
+
+                    const type: number = leftType;
+                    const name: string = this.leftOperand.identifier;
+                    const value: number = leftOperand;
+                    const line: number = this._line!;
+                    const column: number = this._column!;
+
+                    const symbol: InterpreterSymbol = new InterpreterSymbol(type, name, value, line, column);
+
+                    environment.setSymbol(name, symbol);
+
+                    this._type = leftType;
+
+                    return leftOperand;
+                }
+
+                return;
             case OperationType.DIVISION:
                 this._type = this.getQuotientType(leftType, rightType);
 
@@ -898,6 +932,26 @@ class Operation extends Expression {
                     default:
                         return; // Este caso nunca se ejecutará.
                 }
+            case OperationType.INCREMENT:
+                if (this.leftOperand instanceof Identifier) {
+                    leftOperand = parseFloat(<string>leftValue) + parseFloat(String(1));
+
+                    const type: number = leftType;
+                    const name: string = this.leftOperand.identifier;
+                    const value: number = leftOperand;
+                    const line: number = this._line!;
+                    const column: number = this._column!;
+
+                    const symbol: InterpreterSymbol = new InterpreterSymbol(type, name, value, line, column);
+
+                    environment.setSymbol(name, symbol);
+
+                    this._type = leftType;
+
+                    return leftOperand;
+                }
+
+                return;
             case OperationType.INEQUALITY:
                 this._type = DType.BOOLEAN;
 
