@@ -281,8 +281,8 @@ do_while
     ;
 
 for
-    : FOR LEFT_PARENTHESIS assignment SEMICOLON expression SEMICOLON expression RIGHT_PARENTHESIS code_block            { $$ = new For($3, $5, $7, $9, @1.first_line, @1.first_column); }
-    | FOR LEFT_PARENTHESIS declaration SEMICOLON expression SEMICOLON expression RIGHT_PARENTHESIS code_block           { $$ = new For($3, $5, $7, $9, @1.first_line, @1.first_column); }
+    : FOR LEFT_PARENTHESIS assignment expression SEMICOLON expression RIGHT_PARENTHESIS code_block                      { $$ = new For($3, $4, $6, $8, @1.first_line, @1.first_column); }
+    | FOR LEFT_PARENTHESIS declaration expression SEMICOLON expression RIGHT_PARENTHESIS code_block                     { $$ = new For($3, $4, $6, $8, @1.first_line, @1.first_column); }
     ;
 
 while
