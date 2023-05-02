@@ -1,5 +1,5 @@
 // SentenciasIterativas-for
-for (let i = 0; i < 5; i++) {
+for (int i = 0; i < 5; i++) {
     if (i == 0) {
         print("Esta es la primera iteración.");
     } else {
@@ -8,7 +8,7 @@ for (let i = 0; i < 5; i++) {
 }
 
 // SentenciasIterativas-while
-let i = 0;
+int i = 0;
 
 while (i < 10) {
     if (i == 0) {
@@ -21,7 +21,7 @@ while (i < 10) {
 }
 
 // SentenciasIterativas-doWhile
-let i = 25;
+int i = 25;
 
 do {
     print("Esta es la única iteración.");
