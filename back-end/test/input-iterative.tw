@@ -1,0 +1,30 @@
+// SentenciasIterativas-for
+for (let i = 0; i < 5; i++) {
+    if (i == 0) {
+        print("Esta es la primera iteración.");
+    } else {
+        print("Esta no es la primera iteración.");
+    }
+}
+
+// SentenciasIterativas-while
+let i = 0;
+
+while (i < 10) {
+    if (i == 0) {
+        print("Esta es la primera iteración.");
+    } else {
+        print("Esta no es la primera iteración.");
+    }
+
+    i++;
+}
+
+// SentenciasIterativas-doWhile
+let i = 25;
+
+do {
+    print("Esta es la única iteración.");
+
+    i++;
+} while (i == 0);
