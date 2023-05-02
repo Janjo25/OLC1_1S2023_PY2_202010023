@@ -278,7 +278,7 @@ iterative
     ;
 
 do_while
-    : DO code_block WHILE LEFT_PARENTHESIS assignment SEMICOLON                                                         { $$ = new DoWhile($5, $2, @1.first_line, @1.first_column); }
+    : DO code_block WHILE LEFT_PARENTHESIS expression RIGHT_PARENTHESIS SEMICOLON                                       { $$ = new DoWhile($5, $2, @1.first_line, @1.first_column); }
     ;
 
 for
