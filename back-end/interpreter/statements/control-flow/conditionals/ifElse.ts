@@ -4,7 +4,7 @@ import {Operation} from "../../../expressions/operation/operation";
 import {Statement} from "../../statement";
 
 class IfElse extends Statement {
-    private _elseStatementsArrays: Statement[][];
+    private _elseStatementsArray: Statement[];
 
     private readonly _conditionsArray: Expression[];
     private readonly _ifElseStatementsArrays: Statement[][];
@@ -16,11 +16,11 @@ class IfElse extends Statement {
 
         this._ifElseStatementsArrays = ifElseStatementsArrays;
 
-        this._elseStatementsArrays = [];
+        this._elseStatementsArray = [];
     };
 
-    else(elseStatementsArrays: Statement[][]): void {
-        this._elseStatementsArrays = elseStatementsArrays;
+    else(elseStatementsArrays: Statement[]): void {
+        this._elseStatementsArray = elseStatementsArrays;
     };
 
     elseIf(condition: Expression, ifElseStatementsArray: Statement[]): void {
@@ -58,19 +58,15 @@ class IfElse extends Statement {
 
                 return;
             } else if (i == this._conditionsArray.length - 1) { // 3.
-                if (this._elseStatementsArrays !== undefined) {
+                if (this._elseStatementsArray !== undefined) {
                     const name: string = "Sentencia conditional-else";
 
                     const localEnvironment: Environment = new Environment(name, environment, environment);
 
-                    for (let j = 0; j < this._elseStatementsArrays.length; j++) {
-                        const statements: Statement[] = this._elseStatementsArrays[j];
+                    for (let j = 0; j < this._elseStatementsArray.length; j++) {
+                        const statement: Statement = this._elseStatementsArray[j];
 
-                        for (let k = 0; k < statements.length; k++) {
-                            const statement: Statement = statements[k];
-
-                            statement.execute(localEnvironment);
-                        }
+                        statement.execute(localEnvironment);
                     }
                 }
             }
