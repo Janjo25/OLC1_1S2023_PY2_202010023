@@ -1,6 +1,6 @@
-import {Statement} from "../../statement";
 import {Environment} from "../../../environment";
 import {Expression} from "../../../expressions/expression";
+import {Statement} from "../../statement";
 
 // noinspection AssignmentToForLoopParameterJS,SuspiciousTypeOfGuard
 class DoWhile extends Statement {
@@ -19,7 +19,7 @@ class DoWhile extends Statement {
 
         this._line = line;
         this._column = column;
-    }
+    };
 
     execute(environment: Environment): void {
         const name: string = "Sentencia iterativa-doWhile";
@@ -41,7 +41,7 @@ class DoWhile extends Statement {
                 }
             }
         }
-    }
+    };
 }
 
 export {DoWhile};
