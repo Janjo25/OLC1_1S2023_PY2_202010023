@@ -1,0 +1,250 @@
+/* gramática léxica */
+
+/* caracteres de escape */
+"\\'"                           return 'SINGLE_QUOTE';
+"\\\""                          return 'DOUBLE_QUOTE';
+"\\n"                           return 'NEWLINE';
+"\\r"                           return 'RETURN';
+"\\t"                           return 'TAB';
+"\\"                            return 'BACKSLASH';
+
+/* comentarios */
+\/\*[^>]*\*\/                   /* ignorar comentario de bloque */
+\/\/.*                          /* ignorar comentario de línea */
+
+/* datos no primitivos */
+\"[^\"]*\"                      return 'STRING_VALUE';
+
+/* datos primitivos */
+[0-9]+\.[0-9]+                  return 'DOUBLE_VALUE';
+[0-9]+                          return 'INT_VALUE';
+\'.?\'                          return 'CHAR_VALUE';
+
+/* operadores aritméticos */
+"%"                             return 'MODULUS';
+"*"                             return 'MULTIPLICATION';
+"++"                            return 'INCREMENT';
+"+"                             return 'ADDITION';
+"--"                            return 'DECREMENT';
+"-"                             return 'SUBTRACTION';
+"/"                             return 'DIVISION';
+"^"                             return 'EXPONENTIATION';
+
+/* operadores relacionales */
+"!="                            return 'INEQUALITY';
+"<="                            return 'LESS_THAN_OR_EQUAL_TO';
+"<"                             return 'LESS_THAN';
+"=="                            return 'EQUALITY';
+">="                            return 'GREATER_THAN_OR_EQUAL_TO';
+">"                             return 'GREATER_THAN';
+
+/* operadores lógicos */
+"!"                             return 'NOT';
+"&&"                            return 'AND';
+"||"                            return 'OR';
+
+/* palabras reservadas */
+"boolean"                       return 'BOOLEAN_KEYWORD';
+"break"                         return 'BREAK';
+"case"                          return 'CASE';
+"char"                          return 'CHAR_KEYWORD';
+"continue"                      return 'CONTINUE';
+"default"                       return 'DEFAULT';
+"do"                            return 'DO';
+"double"                        return 'DOUBLE_KEYWORD';
+"else"                          return 'ELSE';
+"false"                         return 'FALSE';
+"for"                           return 'FOR';
+"if"                            return 'IF';
+"int"                           return 'INT_KEYWORD';
+"length"                        return 'LENGTH';
+"list"                          return 'LIST';
+"main"                          return 'MAIN';
+"new"                           return 'NEW';
+"print"                         return 'PRINT';
+"return"                        return 'RETURN';
+"round"                         return 'ROUND';
+"string"                        return 'STRING_KEYWORD';
+"switch"                        return 'SWITCH';
+"toCharArray"                   return 'TO_CHAR_ARRAY';
+"toLower"                       return 'TO_LOWER';
+"toString"                      return 'TO_STRING';
+"toUpper"                       return 'TO_UPPER';
+"true"                          return 'TRUE';
+"truncate"                      return 'TRUNCATE';
+"typeof"                        return 'TYPE_OF';
+"void"                          return 'VOID';
+"while"                         return 'WHILE';
+
+/* identificadores */
+[a-zA-Z][a-zA-Z_$0-9]*          return 'IDENTIFIER';
+
+/* símbolos y signos */
+"("                             return 'LEFT_PARENTHESIS';
+")"                             return 'RIGHT_PARENTHESIS';
+","                             return 'COMMA';
+":"                             return 'COLON';
+";"                             return 'SEMICOLON';
+"="                             return 'EQUAL_SIGN';
+"?"                             return 'QUESTION_MARK';
+"["                             return 'LEFT_BRACKET';
+"]"                             return 'RIGHT_BRACKET';
+"{"                             return 'LEFT_BRACE';
+"}"                             return 'RIGHT_BRACE';
+
+/* espacios */
+\s                              /* ignorar espacios en blanco */
+
+/* errores */
+.                               { interpreterErrorsList.pushError('Léxico', yytext, yylloc.first_line, yylloc.first_column); }
+
+/* fin de línea */
+<<EOF>>                         return 'EOF';
+
+/* gramática sintáctica */
+
+program
+    : EOF
+    | statements EOF
+    ;
+
+statements
+    : statement
+    | statements statement
+    ;
+
+statement
+    : assignment
+    | built_in
+    | conditional
+    | declaration
+    | iterative
+    | unary SEMICOLON
+    ;
+
+assignment
+    : IDENTIFIER EQUAL_SIGN expression SEMICOLON
+    ;
+
+built_in
+    : print
+    ;
+
+print
+    : PRINT LEFT_PARENTHESIS expression RIGHT_PARENTHESIS SEMICOLON
+    ;
+
+expression
+    : IDENTIFIER
+    | arithmetic
+    | logical
+    | relational
+    | unary
+    | value
+    ;
+
+arithmetic
+    : SUBTRACTION expression %prec UMINUS
+    | expression ADDITION expression
+    | expression DIVISION expression
+    | expression EXPONENTIATION expression
+    | expression MODULUS expression
+    | expression MULTIPLICATION expression
+    | expression SUBTRACTION expression
+    ;
+
+logical
+    : NOT expression
+    | expression AND expression
+    | expression OR expression
+    ;
+
+relational
+    : expression EQUALITY expression
+    | expression GREATER_THAN expression
+    | expression GREATER_THAN_OR_EQUAL_TO expression
+    | expression INEQUALITY expression
+    | expression LESS_THAN expression
+    | expression LESS_THAN_OR_EQUAL_TO expression
+    ;
+
+unary
+    : expression DECREMENT
+    | expression INCREMENT
+    ;
+
+value
+    : CHAR_VALUE
+    | DOUBLE_VALUE
+    | FALSE
+    | INT_VALUE
+    | STRING_VALUE
+    | TRUE
+    ;
+
+conditional
+    : if
+    | switch
+    | ternary
+    ;
+
+if
+    : else_if
+    | else_if ELSE code_block
+    ;
+
+else_if
+    : IF LEFT_PARENTHESIS expression RIGHT_PARENTHESIS code_block
+    | else_if ELSE IF LEFT_PARENTHESIS expression RIGHT_PARENTHESIS code_block
+    ;
+
+code_block
+    : LEFT_BRACE statements RIGHT_BRACE
+    ;
+
+switch
+    : SWITCH LEFT_PARENTHESIS expression RIGHT_PARENTHESIS LEFT_BRACE cases RIGHT_BRACE
+    | SWITCH LEFT_PARENTHESIS expression RIGHT_PARENTHESIS LEFT_BRACE cases default RIGHT_BRACE
+    | SWITCH LEFT_PARENTHESIS expression RIGHT_PARENTHESIS LEFT_BRACE default RIGHT_BRACE
+    ;
+
+cases
+    : CASE expression COLON statements
+    | cases CASE expression COLON statements
+    ;
+
+default
+    : DEFAULT COLON statements
+    ;
+
+declaration
+    : data_type IDENTIFIER EQUAL_SIGN expression SEMICOLON
+    | data_type IDENTIFIER SEMICOLON
+    ;
+
+data_type
+    : BOOLEAN_KEYWORD
+    | CHAR_KEYWORD
+    | DOUBLE_KEYWORD
+    | INT_KEYWORD
+    | STRING_KEYWORD
+    ;
+
+iterative
+    : do_while
+    | for
+    | while
+    ;
+
+do_while
+    : DO code_block WHILE LEFT_PARENTHESIS expression RIGHT_PARENTHESIS SEMICOLON
+    ;
+
+for
+    : FOR LEFT_PARENTHESIS assignment expression SEMICOLON expression RIGHT_PARENTHESIS code_block
+    | FOR LEFT_PARENTHESIS declaration expression SEMICOLON expression RIGHT_PARENTHESIS code_block
+    ;
+
+while
+    : WHILE LEFT_PARENTHESIS expression RIGHT_PARENTHESIS code_block
+    ;
